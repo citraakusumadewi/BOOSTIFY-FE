@@ -63,9 +63,6 @@ const About: React.FC = () => {
               <li className="mb-2 flex items-center text-gray-700">
                 <Image src="/playImg.png" alt="Play" className="mr-4" width={24} height={24} /> Speaker
               </li>
-              <li className="mb-2 flex items-center text-gray-700">
-                <Image src="/playImg.png" alt="Play" className="mr-4" width={24} height={24} /> Anti Spoofing Protection
-              </li>
             </ul>
           </div>
         </section>

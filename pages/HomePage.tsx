@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
             Capture Your Smile, Capture Your Presence
           </h1>
           <p className={`text-sm sm:text-base md:text-lg leading-relaxed lg:pl-0 text-justify ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} text-justify`}>
-            This device is an attendance system based on facial recognition technology that requires users to smile as a sign of presence. With just a smile, your attendance is automatically recorded and enhances the positive atmosphere in the workplace or school.
+          This device is an attendance system based on facial recognition technology that requires users to smile as a sign of presence. With just a smile, your attendance is automatically recorded and enhancing the positive atmosphere in the workplace or school. Additionally, this device aims to boost people's enthusiasm and motivation to start their day with a smile, creating a more positive and productive environment.
           </p>
         </div>
 

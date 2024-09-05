@@ -20,6 +20,7 @@ interface ApiResponse {
 
 const LiveReport: React.FC = () => {
   const [attendanceData, setAttendanceData] = useState<AttendanceItem[]>([]);
+  const [filteredData, setFilteredData] = useState<AttendanceItem[]>([]); // state untuk data terfilter
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -48,6 +49,7 @@ const LiveReport: React.FC = () => {
 
           const data: ApiResponse = await response.json();
           setAttendanceData(data.assistances);
+          setFilteredData(data.assistances); // set data awal terfilter
           setTotalPages(data.totalPages);
         } catch (error: any) {
           console.error('Failed to fetch attendance data:', error.message);
@@ -93,6 +95,19 @@ const LiveReport: React.FC = () => {
     }
   };
 
+  const filterByDate = () => {
+    if (selectedDate) {
+      const filtered = attendanceData.filter(item => {
+        const itemDate = new Date(item.time).setHours(0, 0, 0, 0); // Hanya bandingkan tanggal tanpa waktu
+        const selected = selectedDate.setHours(0, 0, 0, 0);
+        return itemDate === selected;
+      });
+      setFilteredData(filtered); // Set data terfilter
+    } else {
+      setFilteredData(attendanceData); // Jika tidak ada tanggal yang dipilih, tampilkan semua data
+    }
+  };
+
   if (loading) {
     return <div className="text-center mt-4">Loading...</div>;
   }
@@ -100,13 +115,6 @@ const LiveReport: React.FC = () => {
   if (error) {
     return <div className="text-center mt-4 text-red-500">Error: {error}</div>;
   }
-
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
-    // Add logic here to filter attendanceData based on selectedDate
-  };
-
-  const currentDate = selectedDate || new Date();
 
   return (
     <div className="max-w-screen-xl mx-auto">
@@ -119,25 +127,35 @@ const LiveReport: React.FC = () => {
         <DatePicker
           id="date-picker"
           selected={selectedDate}
-          onChange={handleDateChange}
+          onChange={date => setSelectedDate(date)}
           className="p-2 text-lg border rounded-lg border-gray-300"
           dateFormat="dd/MM/yyyy"
           placeholderText="Click to select a date"
         />
+        <button
+          onClick={filterByDate}
+          className="bg-[#7D0A0A] text-[#EAD196] p-2 rounded-lg text-lg font-bold"
+        >
+          Apply
+        </button>
       </div>
       <div className="flex flex-col items-center gap-5 mb-8">
-        {attendanceData.map((item) => (
-          <div key={item.id} className="bg-[#EAD196] p-5 rounded-lg w-full max-w-3xl flex justify-between items-center shadow-md">
-            <div className="flex-1 mr-5 text-left">
-              <div className="text-2xl font-bold mb-1">{item.assisstant_code}</div>
-              <div className="text-lg text-gray-800">{item.name}</div>
+        {filteredData.length > 0 ? (
+          filteredData.map((item) => (
+            <div key={item.id} className="bg-[#EAD196] p-5 rounded-lg w-full max-w-3xl flex justify-between items-center shadow-md">
+              <div className="flex-1 mr-5 text-left">
+                <div className="text-2xl font-bold mb-1">{item.assisstant_code}</div>
+                <div className="text-lg text-gray-800">{item.name}</div>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-bold">{formatDate(item.time)}</div>
+                <div className="text-md font-bold">{formatTime(item.time)}</div>
+              </div>
             </div>
-            <div className="text-right">
-              <div className="text-lg font-bold">{formatDate(item.time)}</div>
-              <div className="text-md font-bold">{formatTime(item.time)}</div>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <div className="text-lg text-gray-600">No data found</div>
+        )}
       </div>
       <div className="flex justify-center items-center gap-4 mb-8">
         {currentPage > 1 && (

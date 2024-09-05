@@ -126,6 +126,20 @@ const HomeNav: React.FC = () => {
               </Link>
             </li>
             <li className="w-full text-center md:w-auto">
+              <Link href="/LiveReport" passHref>
+                <span className={`font-medium ${isDarkMode ? 'text-[#EAD196]' : 'text-red-700'}`}>
+                  Live Report
+                </span>
+              </Link>
+            </li>
+            <li className="w-full text-center md:w-auto">
+              <Link href="/Recap" passHref>
+                <span className={`font-medium ${isDarkMode ? 'text-[#EAD196]' : 'text-red-700'}`}>
+                  Recap
+                </span>
+              </Link>
+            </li>
+            <li className="w-full text-center md:w-auto">
               <button onClick={() => setShowPopup(true)} className={`font-bold ${isDarkMode ? 'text-[#EAD196]' : 'text-red-700'}`}>
                 Sign Out
               </button>

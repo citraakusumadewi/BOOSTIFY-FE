@@ -119,43 +119,47 @@ const Recap: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <HomeNav />
-      <main className="flex-1 p-6 text-center">
-        <h2 className="text-4xl font-bold text-gray-600 my-24">ATTENDANCE RECAP</h2>
+      <main className="flex-1 px-4 py-6 text-center sm:px-6 md:px-10 lg:px-16 xl:px-24">
+        <h2 className="text-3xl font-bold text-gray-600 mb-16 sm:text-4xl lg:text-5xl xl:my-24">
+          ATTENDANCE RECAP
+        </h2>
+
         {currentPage === 1 ? (
-          // First page specific layout
+          // First page layout
           <div>
-            <div className="relative h-[250px] mb-16">
-            {rankedData.map((attendee, index) => {
-              const rankClasses = index === 0 
-                ? 'top-0 left-1/2 transform -translate-x-1/2' 
-                : index === 1 
-                ? 'top-36 left-1/4' 
-                : 'top-36 right-1/4';
-              
-              const medalIcon = index === 0 
-                ? '/gold-medal.png'
-                : index === 1
-                ? '/silver-medal.png'
-                : '/bronze-medal.png';
-              
-              return (
-                <div key={index} className={`text-center text-red-800 absolute flex flex-col items-center ${rankClasses}`}>
-                  <Image 
-                    src={medalIcon} 
-                    alt="medal" 
-                    className="absolute top-[-10px] left-[-15px] w-20 h-20 object-contain z-20" 
-                    width={80} // Ganti dengan ukuran yang sesuai
-                    height={80} // Ganti dengan ukuran yang sesuai
-                  />
-                  <div className="bg-[#EAD196] w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10">
-                    <span>{attendee.assisstant_code}</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+              {rankedData.map((attendee, index) => {
+                const rankClasses = index === 0 
+                  ? 'col-span-2 flex justify-center' // Full width in mobile
+                  : 'flex justify-center'; // Default for others
+
+                const medalIcon = index === 0 
+                  ? '/gold-medal.png'
+                  : index === 1
+                  ? '/silver-medal.png'
+                  : '/bronze-medal.png';
+
+                return (
+                  <div key={index} className={`${rankClasses} text-center`}>
+                    <div className="relative">
+                      <Image 
+                        src={medalIcon} 
+                        alt="medal" 
+                        className="absolute top-[-10px] left-[-15px] w-20 h-20 object-contain z-20" 
+                        width={80}
+                        height={80}
+                      />
+                      <div className="bg-[#EAD196] w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10">
+                        <span>{attendee.assisstant_code}</span>
+                      </div>
+                      <p className="text-3xl font-bold text-gray-800 mt-2">{attendee.totalAttendance}</p>
+                    </div>
                   </div>
-                  <p className="text-3xl font-bold text-gray-800 mt-2">{attendee.totalAttendance}</p>
-                </div>
-              );
-            })}
+                );
+              })}
             </div>
-            <div className="relative inline-block text-right mt-20">
+
+            <div className="relative inline-block text-right mt-10 sm:mt-20">
               <button onClick={toggleFilter} className="text-[#3F3C38] text-base flex items-center">
                 Filter
               </button>
@@ -173,9 +177,13 @@ const Recap: React.FC = () => {
                 </div>
               )}
             </div>
-            <div className="max-w-md mx-auto mt-10 mb-10">
+
+            <div className="max-w-3xl mx-auto mt-10 mb-10">
               {attendanceData.map((attendee, index) => (
-                <div key={index} className="bg-[#EAD196] flex justify-between p-[20px] my-4 rounded-lg shadow-lg w-full">
+                <div
+                  key={index}
+                  className="bg-[#EAD196] flex justify-between items-center p-[20px] my-4 rounded-lg shadow-lg w-full"
+                >
                   <div className="text-left">
                     <h3 className="text-2xl font-bold text-[#3F3C38]">{attendee.assisstant_code}</h3>
                     <p className="text-lg text-[#4A4A4A]">{attendee.name}</p>
@@ -191,7 +199,7 @@ const Recap: React.FC = () => {
           </div>
         ) : (
           // Other pages layout
-          <div className="mx-auto max-w-md">
+          <div className="mx-auto max-w-md sm:max-w-xl lg:max-w-2xl">
             {attendanceData.map((attendee, index) => (
               <div key={index} className="bg-[#EAD196] flex justify-between p-5 mb-5 rounded-lg shadow-md">
                 <div className="text-left">
@@ -207,9 +215,13 @@ const Recap: React.FC = () => {
             ))}
           </div>
         )}
+
         <div className="flex justify-center items-center my-5">
           {currentPage > 1 && (
-            <button onClick={handlePreviousPage} className="bg-red-800 text-[#EAD196] p-2 rounded-full mx-2 text-xl transition-colors hover:bg-red-700">
+            <button
+              onClick={handlePreviousPage}
+              className="bg-red-800 text-[#EAD196] p-2 rounded-full mx-2 text-xl transition-colors hover:bg-red-700"
+            >
               ◀
             </button>
           )}
@@ -217,7 +229,10 @@ const Recap: React.FC = () => {
             PAGE {currentPage}
           </button>
           {currentPage < totalPages && (
-            <button onClick={handleNextPage} className="bg-red-800 text-[#EAD196] p-2 rounded-full mx-2 text-xl transition-colors hover:bg-red-700">
+            <button
+              onClick={handleNextPage}
+              className="bg-red-800 text-[#EAD196] p-2 rounded-full mx-2 text-xl transition-colors hover:bg-red-700"
+            >
               ▶
             </button>
           )}

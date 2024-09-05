@@ -24,6 +24,7 @@ const Profile: React.FC = () => {
   const { isDarkMode } = useTheme();
   const [profileImage, setProfileImage] = useState<string>('/user.png');
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null); // New state for file name
 
   const fetchUserData = async () => {
     const authDataString = localStorage.getItem('authData');
@@ -56,6 +57,8 @@ const Profile: React.FC = () => {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      setSelectedFileName(file.name); // Update the state with the selected file name
+
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic'];
       if (!allowedTypes.includes(file.type)) {
         alert('Only JPG, JPEG, PNG, and HEIC formats are allowed.');
@@ -194,9 +197,9 @@ const Profile: React.FC = () => {
             <Image 
               src={isDarkMode ? "/pencil-dark.png" : "/pencil-light.png"} 
               alt="Edit Profile" 
-              width={40}  // You can adjust this value
-              height={40} // You can adjust this value
-              className="absolute bottom-4 right-0 cursor-pointer sm:w-10 sm:h-10 aspect-square" 
+              width={50}  // You can adjust this value
+              height={30} // You can adjust this value
+              className="absolute bottom-1 right-3 cursor-pointer sm:w-10 sm:h-10 aspect-square" 
               onClick={() => setShowModal(true)} 
             />
           </div>
@@ -204,7 +207,7 @@ const Profile: React.FC = () => {
           <h1 className="text-lg sm:text-2xl md:text-3xl font-bold text-gray-800">{profileData?.name || 'Loading...'}</h1>
         </div>
         <section className="mt-8 sm:mt-12">
-          <h2 className="font-bold text-xl sm:text-2xl mb-6 sm:mb-8">Attendance History</h2>
+          <h2 className="font-bold text-xl sm:text-2xl mb-6 sm:mb-8 text-red-800">Attendance History</h2>
           {attendanceData.length > 0 ? (
             attendanceData.map((item: AttendanceItem, index: number) => (
               <div key={index} className="flex justify-between py-2 border-b text-base sm:text-lg font-bold">
@@ -220,12 +223,12 @@ const Profile: React.FC = () => {
 
       {showModal && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-4 sm:p-5 rounded-lg text-center w-56 sm:w-64 relative">
-            <button className="absolute top-2 right-2 text-lg font-bold text-gray-700" onClick={() => setShowModal(false)}>
+          <div className="bg-[#7D0A0A] p-6 rounded-lg text-center w-64 relative">
+            <button className="absolute top-2 right-2 text-lg font-bold text-[#EAD196]" onClick={() => setShowModal(false)}>
               &times;
             </button>
-            <h3 className="mb-2 text-base sm:text-lg font-bold text-gray-800">Edit Profile Picture</h3>
-            <label className="inline-block py-1 px-2 bg-[#D7B66A] text-[#7D0A0A] rounded cursor-pointer mb-2">
+            <h3 className="mb-4 text-lg font-bold text-[#EAD196]">Edit profile picture</h3>
+            <label className="inline-block py-1 px-2 bg-[#EAD196] text-[#7D0A0A] rounded cursor-pointer mb-2">
               <input 
                 type="file" 
                 accept="image/jpeg,image/jpg,image/png,image/heic" 
@@ -234,9 +237,22 @@ const Profile: React.FC = () => {
               />
               Choose File
             </label>
-            <div className="flex justify-between mt-4">
-              <button className="py-1 px-3 bg-[#7D0A0A] text-[#D7B66A] rounded font-bold" onClick={handleDeleteImage}>Delete Image</button>
-              <button className="py-1 px-3 bg-[#D7B66A] text-[#7D0A0A] rounded font-bold" onClick={() => setShowModal(false)}>Upload</button>
+            {selectedFileName && (
+              <p className="text-sm mt-2 text-[#EAD196]">{selectedFileName}</p> // Display the selected file name
+            )}
+            <div className="flex justify-between mt-4 gap-5">
+              <button
+                className="py-1 px-4 bg-[#F3EDC8] text-[#BF3131] rounded-lg font-bold"
+                onClick={handleDeleteImage}
+              >
+                Delete Image
+              </button>
+              <button
+                className="py-1 px-4 bg-[#EAD196] text-[#BF3131] rounded-lg font-bold"
+                onClick={() => setShowModal(false)}
+              >
+                Upload
+              </button>
             </div>
           </div>
         </div>

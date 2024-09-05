@@ -49,7 +49,7 @@ const OurTeam: React.FC = () => {
           
           <div className="bg-[#7D0A0A] text-yellow-100 p-6 md:p-8 rounded-lg shadow-lg w-full max-w-md lg:max-w-lg xl:max-w-2xl">
             <h2 className={`text-xl sm:text-2xl mb-4 md:mb-6 font-bold text-left ${isDarkMode ? 'text-yellow-200' : 'text-[#EAD196]'}`}>
-              Frontend
+              Machine Learning & IoT
             </h2>
             <div className="grid grid-cols-2 gap-4 sm:gap-6">
               <div className="text-center">
@@ -70,11 +70,17 @@ const OurTeam: React.FC = () => {
                 </div>
                 <p className={`${isDarkMode ? 'text-yellow-200' : 'text-[#EAD196]'} text-base sm:text-lg`}>ATX</p>
               </div>
+              <div className="text-center">
+                <div className="rounded-full overflow-hidden w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-2">
+                  <Image src="/Nabil.jpg" alt="AFN" width={80} height={80} className="object-cover" />
+                </div>
+                <p className={`${isDarkMode ? 'text-yellow-200' : 'text-[#EAD196]'} text-base sm:text-lg`}>AFN</p>
+              </div>
             </div>
           </div>
           <div className="bg-[#7D0A0A] text-yellow-100 p-6 md:p-8 rounded-lg shadow-lg w-full max-w-md lg:max-w-lg xl:max-w-2xl">
             <h2 className={`text-xl sm:text-2xl mb-4 md:mb-6 font-bold text-left ${isDarkMode ? 'text-yellow-200' : 'text-[#EAD196]'}`}>
-              Machine Learning
+              Machine Learning & IoT
             </h2>
             <div className="grid grid-cols-2 gap-4 sm:gap-6">
               <div className="text-center">
@@ -101,11 +107,13 @@ const OurTeam: React.FC = () => {
                 </div>
                 <p className={`${isDarkMode ? 'text-yellow-200' : 'text-[#EAD196]'} text-base sm:text-lg`}>KSF</p>
               </div>
-              <div className="text-center">
-                <div className="rounded-full overflow-hidden w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-2">
-                  <Image src="/juna.jpeg" alt="JIN" width={80} height={80} className="object-cover" />
+              <div className="col-span-2 flex justify-center">
+                <div className="flex flex-col justify-center items-center">
+                  <div className="rounded-full overflow-hidden w-16 h-16 sm:w-20 sm:h-20 mb-2">
+                    <Image src="/juna.jpeg" alt="JIN" width={80} height={80} className="object-cover" />
+                  </div>
+                  <p className={`${isDarkMode ? 'text-yellow-200' : 'text-[#EAD196]'} text-base sm:text-lg`}>JIN</p>
                 </div>
-                <p className={`${isDarkMode ? 'text-yellow-200' : 'text-[#EAD196]'} text-base sm:text-lg`}>JIN</p>
               </div>
             </div>
           </div>
