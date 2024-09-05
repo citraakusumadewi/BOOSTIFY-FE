@@ -117,27 +117,31 @@ const LiveReport: React.FC = () => {
   }
 
   return (
-    <div className="max-w-screen-xl mx-auto">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
       <HomeNav />
-      <h1 className="text-5xl font-bold text-center text-gray-600 my-24">ATTENDANCE</h1>
-      <div className="flex items-center justify-center gap-4 mb-8 text-center">
-        <label htmlFor="date-picker" className="text-center text-xl text-gray-700">
+      <h1 className="text-4xl sm:text-5xl font-bold text-center text-gray-600 my-12 sm:my-24">
+        ATTENDANCE
+      </h1>
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 text-center sm:text-left">
+        <label htmlFor="date-picker" className="text-lg sm:text-xl text-gray-700">
           Select Date:
         </label>
-        <DatePicker
-          id="date-picker"
-          selected={selectedDate}
-          onChange={date => setSelectedDate(date)}
-          className="p-2 text-lg border rounded-lg border-gray-300"
-          dateFormat="dd/MM/yyyy"
-          placeholderText="Click to select a date"
-        />
-        <button
-          onClick={filterByDate}
-          className="bg-[#7D0A0A] text-[#EAD196] p-2 rounded-lg text-lg font-bold"
-        >
-          Apply
-        </button>
+        <div className="flex items-center gap-4">
+          <DatePicker
+            id="date-picker"
+            selected={selectedDate}
+            onChange={date => setSelectedDate(date)}
+            className="p-2 text-base sm:text-lg border rounded-lg border-gray-300 flex-shrink-0"
+            dateFormat="dd/MM/yyyy"
+            placeholderText="Click to select a date"
+          />
+          <button
+            onClick={filterByDate}
+            className="bg-[#7D0A0A] text-[#EAD196] p-2 rounded-lg text-base sm:text-lg font-bold"
+          >
+            Apply
+          </button>
+        </div>
       </div>
       <div className="flex flex-col items-center gap-5 mb-8">
         {filteredData.length > 0 ? (
@@ -157,22 +161,22 @@ const LiveReport: React.FC = () => {
           <div className="text-lg text-gray-600">No data found</div>
         )}
       </div>
-      <div className="flex justify-center items-center gap-4 mb-8">
+      <div className="flex justify-center items-center my-5">
         {currentPage > 1 && (
-          <button 
-            className="bg-[#7D0A0A] text-[#EAD196] p-2 rounded-lg text-lg cursor-pointer" 
+          <button
             onClick={handlePreviousPage}
+            className="bg-red-800 text-[#EAD196] p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors hover:bg-red-700"
           >
             ◀
           </button>
         )}
-        <button className="bg-[#7D0A0A] text-[#EAD196] px-4 py-2 rounded-lg font-bold" disabled>
+        <button className="bg-red-800 text-[#EAD196] p-3 rounded-full mx-2 text-lg sm:text-xl font-bold" disabled>
           PAGE {currentPage}
         </button>
         {currentPage < totalPages && (
-          <button 
-            className="bg-[#7D0A0A] text-[#EAD196] p-2 rounded-lg text-lg cursor-pointer" 
+          <button
             onClick={handleNextPage}
+            className="bg-red-800 text-[#EAD196] p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors hover:bg-red-700"
           >
             ▶
           </button>
@@ -181,6 +185,6 @@ const LiveReport: React.FC = () => {
       <Footer />
     </div>
   );
-};
+};  
 
 export default LiveReport;
