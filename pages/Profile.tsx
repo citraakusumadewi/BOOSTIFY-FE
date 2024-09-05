@@ -24,7 +24,7 @@ const Profile: React.FC = () => {
   const { isDarkMode } = useTheme();
   const [profileImage, setProfileImage] = useState<string>('/user.png');
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [selectedFileName, setSelectedFileName] = useState<string | null>(null); // New state for file name
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
 
   const fetchUserData = async () => {
     const authDataString = localStorage.getItem('authData');
@@ -57,7 +57,7 @@ const Profile: React.FC = () => {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setSelectedFileName(file.name); // Update the state with the selected file name
+      setSelectedFileName(file.name);
 
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic'];
       if (!allowedTypes.includes(file.type)) {
@@ -72,7 +72,7 @@ const Profile: React.FC = () => {
           const token = authData.token.token;
 
           const formData = new FormData();
-          formData.append('image', file); // Match the key expected by multer
+          formData.append('image', file);
 
           const response = await fetch('https://boostify-back-end.vercel.app/api/uploadImage', {
             method: 'PATCH',
@@ -94,7 +94,7 @@ const Profile: React.FC = () => {
             if (!prevState) return null;
             return {
               ...prevState,
-              image_url: updatedImageUrl, // Use the updated image URL
+              image_url: updatedImageUrl,
             };
           });
           setProfileImage(updatedImageUrl);
@@ -129,7 +129,7 @@ const Profile: React.FC = () => {
           if (!prevState) return null;
           return {
             ...prevState,
-            image_url: '/user.png', // Reset to default image after deletion
+            image_url: '/user.png',
           };
         });
         setShowModal(false);
@@ -145,9 +145,7 @@ const Profile: React.FC = () => {
       try {
         const authData = JSON.parse(authDataString);
         const token = authData.token.token;
-  
-        console.log('Fetching attendance data with token:', token); // Debugging line
-  
+
         const response = await fetch('https://boostify-back-end.vercel.app/api/personalrec', {
           method: 'GET',
           headers: {
@@ -155,24 +153,23 @@ const Profile: React.FC = () => {
             'Content-Type': 'application/json',
           },
         });
-  
+
         if (!response.ok) {
           if (response.status === 404) {
-            setAttendanceData([]); // Set to an empty array to display "No attendance history available"
+            setAttendanceData([]);
           } else {
             const errorText = await response.text();
             throw new Error(`Network response was not ok: ${response.status} ${errorText}`);
           }
         } else {
           const data = await response.json();
-          console.log('Attendance data received:', data); // Debugging line
-          setAttendanceData(data.attendancesTime || []);
+          setAttendanceData(data.payload.attendancesTime || []);
         }
       } catch (error: any) {
         console.error('Failed to fetch attendance data:', error.message);
       }
     }
-  };  
+  };
 
   useEffect(() => {
     fetchUserData();
@@ -180,7 +177,7 @@ const Profile: React.FC = () => {
   }, []);
 
   return (
-    <div className={`max-w-7xl mx-auto ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
+    <div className={`max-w-7xl mx-auto ${isDarkMode ? 'bg-[#0D0D0D] text-[#BDBDBD]' : 'bg-white text-[#515151]'}`}>
       <HomeNav />
       <main className="px-4 py-10">
         <div className={`flex flex-col items-center mb-10 ${isDarkMode ? 'text-white' : 'text-black'}`}>
@@ -194,70 +191,53 @@ const Profile: React.FC = () => {
                 className="object-cover w-full h-full" 
               />
             </div>
-            <Image 
-              src={isDarkMode ? "/pencil-dark.png" : "/pencil-light.png"} 
-              alt="Edit Profile" 
-              width={50}  // You can adjust this value
-              height={30} // You can adjust this value
-              className="absolute bottom-1 right-3 cursor-pointer sm:w-10 sm:h-10 aspect-square" 
-              onClick={() => setShowModal(true)} 
+            <Image
+              src={isDarkMode ? "/pencil-dark.png" : "/pencil-light.png"}
+              alt="Edit Profile"
+              width={40} // Default width for smaller screens
+              height={40} // Default height for smaller screens
+              style={{ objectFit: 'cover' }}
+              className="absolute bottom-1 right-0 cursor-pointer sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16"
+              onClick={() => setShowModal(true)}
             />
           </div>
-          <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-700 my-4 sm:my-5">{profileData?.assisstant_code || 'N/A'}</h2>
-          <h1 className="text-lg sm:text-2xl md:text-3xl font-bold text-gray-800">{profileData?.name || 'Loading...'}</h1>
+          <h2 className={`text-lg sm:text-xl md:text-2xl font-bold ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#515151]'} my-4 sm:my-5`}>
+            {profileData?.assisstant_code || 'N/A'}
+          </h2>
+          <h1 className={`text-lg sm:text-2xl md:text-3xl font-bold ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#515151]'}`}>
+            {profileData?.name || 'Loading...'}
+          </h1>
         </div>
         <section className="mt-8 sm:mt-12">
-          <h2 className="font-bold text-xl sm:text-2xl mb-6 sm:mb-8 text-red-800">Attendance History</h2>
+          <h2 className={`font-bold text-xl sm:text-2xl mb-6 sm:mb-8 ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}>
+            Attendance History
+          </h2>
           {attendanceData.length > 0 ? (
             attendanceData.map((item: AttendanceItem, index: number) => (
-              <div key={index} className="flex justify-between py-2 border-b text-base sm:text-lg font-bold">
+              <div key={index} className={`flex justify-between py-2 border-b text-base sm:text-lg font-bold ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#3F3C38]'}`}>
                 <span className="flex-1">{item.time}</span>
                 <span className="flex-1 text-right">{formatTime(item.rawTime)}</span>
               </div>
             ))
           ) : (
-            <p className="text-base sm:text-lg text-gray-600">No attendance history available</p>
+            <p className={`text-base sm:text-lg ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#515151]'}`}>
+              No attendance records found.
+            </p>
           )}
         </section>
       </main>
-
+      <Footer />
       {showModal && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#7D0A0A] p-6 rounded-lg text-center w-64 relative">
-            <button className="absolute top-2 right-2 text-lg font-bold text-[#EAD196]" onClick={() => setShowModal(false)}>
-              &times;
-            </button>
-            <h3 className="mb-4 text-lg font-bold text-[#EAD196]">Edit profile picture</h3>
-            <label className="inline-block py-1 px-2 bg-[#EAD196] text-[#7D0A0A] rounded cursor-pointer mb-2">
-              <input 
-                type="file" 
-                accept="image/jpeg,image/jpg,image/png,image/heic" 
-                onChange={handleFileChange}
-                className="hidden" 
-              />
-              Choose File
-            </label>
-            {selectedFileName && (
-              <p className="text-sm mt-2 text-[#EAD196]">{selectedFileName}</p> // Display the selected file name
-            )}
-            <div className="flex justify-between mt-4 gap-5">
-              <button
-                className="py-1 px-4 bg-[#F3EDC8] text-[#BF3131] rounded-lg font-bold"
-                onClick={handleDeleteImage}
-              >
-                Delete Image
-              </button>
-              <button
-                className="py-1 px-4 bg-[#EAD196] text-[#BF3131] rounded-lg font-bold"
-                onClick={() => setShowModal(false)}
-              >
-                Upload
-              </button>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className={`bg-white p-6 rounded-lg ${isDarkMode ? 'bg-[#1C1C1C]' : 'bg-white'}`}>
+            <h2 className="text-lg font-bold mb-4">Are you sure you want to delete your profile image?</h2>
+            <div className="flex justify-between">
+              <button onClick={handleDeleteImage} className="bg-red-600 text-white px-4 py-2 rounded-md">Delete</button>
+              <button onClick={() => setShowModal(false)} className="bg-gray-400 text-white px-4 py-2 rounded-md">Cancel</button>
             </div>
           </div>
         </div>
       )}
-      <Footer />
     </div>
   );
 };

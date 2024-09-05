@@ -3,6 +3,7 @@ import HomeNav from '../components/HomeNav';
 import Footer from '../components/Footer';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useTheme } from '../styles/ThemeContext'; // Import useTheme
 import Image from 'next/image'; // Import Image from next/image
 
 interface AttendanceItem {
@@ -20,6 +21,8 @@ const Recap: React.FC = () => {
   const [totalPages, setTotalPages] = useState<number>(8);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { isDarkMode } = useTheme();
+
 
   const toggleFilter = () => {
     setFilterOpen(!filterOpen);
@@ -127,37 +130,37 @@ const Recap: React.FC = () => {
         {currentPage === 1 ? (
           // First page layout
           <div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-              {rankedData.map((attendee, index) => {
-                const rankClasses = index === 0 
-                  ? 'col-span-2 flex justify-center' // Full width in mobile
-                  : 'flex justify-center'; // Default for others
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+            {rankedData.map((attendee, index) => {
+              const rankClasses = index === 0 
+                ? 'col-span-2 flex justify-center' // Full width in mobile
+                : 'flex justify-center'; // Default for others
 
-                const medalIcon = index === 0 
-                  ? '/gold-medal.png'
-                  : index === 1
-                  ? '/silver-medal.png'
-                  : '/bronze-medal.png';
+              const medalIcon = index === 0 
+                ? '/gold-medal.png'
+                : index === 1
+                ? '/silver-medal.png'
+                : '/bronze-medal.png';
 
-                return (
-                  <div key={index} className={`${rankClasses} text-center`}>
-                    <div className="relative">
-                      <Image 
-                        src={medalIcon} 
-                        alt="medal" 
-                        className="absolute top-[-10px] left-[-15px] w-20 h-20 object-contain z-20" 
-                        width={80}
-                        height={80}
-                      />
-                      <div className="bg-[#EAD196] w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10">
-                        <span>{attendee.assisstant_code}</span>
-                      </div>
-                      <p className="text-3xl font-bold text-gray-800 mt-2">{attendee.totalAttendance}</p>
+              return (
+                <div key={index} className={`${rankClasses} text-center`}>
+                  <div className="relative">
+                    <Image 
+                      src={medalIcon} 
+                      alt="medal" 
+                      className="absolute top-[-10px] left-[-15px] w-20 h-20 object-contain z-20" 
+                      width={80}
+                      height={80}
+                    />
+                    <div className="bg-[#EAD196] w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10">
+                      <span>{attendee.assisstant_code}</span>
                     </div>
+                    <p className="text-3xl font-bold text-gray-800 mt-2">{attendee.totalAttendance}</p>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
+          </div>
 
             <div className="relative inline-block text-right mt-10 sm:mt-20">
               <button onClick={toggleFilter} className="text-[#3F3C38] text-base flex items-center">
