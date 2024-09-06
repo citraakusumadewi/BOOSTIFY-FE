@@ -125,6 +125,7 @@ const Profile: React.FC = () => {
         }
 
         setProfileImage('/user.png');
+        setSelectedFileName(null);
         setProfileData((prevState) => {
           if (!prevState) return null;
           return {
@@ -197,7 +198,7 @@ const Profile: React.FC = () => {
               width={40} // Default width for smaller screens
               height={40} // Default height for smaller screens
               style={{ objectFit: 'cover' }}
-              className="absolute bottom-1 right-0 cursor-pointer sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16"
+              className="absolute bottom-1 right-2 cursor-pointer sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-13 lg:h-13"
               onClick={() => setShowModal(true)}
             />
           </div>
@@ -228,12 +229,31 @@ const Profile: React.FC = () => {
       </main>
       <Footer />
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className={`bg-white p-6 rounded-lg ${isDarkMode ? 'bg-[#1C1C1C]' : 'bg-white'}`}>
-            <h2 className="text-lg font-bold mb-4">Are you sure you want to delete your profile image?</h2>
-            <div className="flex justify-between">
-              <button onClick={handleDeleteImage} className="bg-red-600 text-white px-4 py-2 rounded-md">Delete</button>
-              <button onClick={() => setShowModal(false)} className="bg-gray-400 text-white px-4 py-2 rounded-md">Cancel</button>
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-4 sm:p-5 rounded-lg text-center w-56 sm:w-64 relative">
+            <button className="absolute top-2 right-2 text-lg font-bold text-gray-700" onClick={() => setShowModal(false)}>
+              &times;
+            </button>
+            <h3 className="mb-2 text-base sm:text-lg font-bold text-gray-800">Edit Profile Picture</h3>
+            
+            <label className="inline-block py-1 px-2 bg-[#D7B66A] text-[#7D0A0A] rounded cursor-pointer mb-2">
+              <input 
+                type="file" 
+                accept="image/jpeg,image/jpg,image/png,image/heic" 
+                onChange={handleFileChange}
+                className="hidden" 
+              />
+              Choose File
+            </label>
+
+            {/* Tampilkan nama file yang dipilih di sini */}
+            {selectedFileName && (
+              <p className="mt-2 text-sm text-gray-600">{selectedFileName}</p>
+            )}
+
+            <div className="flex justify-between mt-4">
+              <button className="py-1 px-3 bg-[#7D0A0A] text-[#D7B66A] rounded font-bold" onClick={handleDeleteImage}>Delete Image</button>
+              <button className="py-1 px-3 bg-[#D7B66A] text-[#7D0A0A] rounded font-bold" onClick={() => setShowModal(false)}>Upload</button>
             </div>
           </div>
         </div>

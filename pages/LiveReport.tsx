@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import HomeNav from '../components/HomeNav';
 import Footer from '../components/Footer';
 import DatePicker from 'react-datepicker';
+import { useTheme } from '../styles/ThemeContext';
 import 'react-datepicker/dist/react-datepicker.css';
 
 interface AttendanceItem {
@@ -25,6 +26,7 @@ const LiveReport: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const { isDarkMode } = useTheme(); // Get the theme (dark/light mode)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -117,13 +119,13 @@ const LiveReport: React.FC = () => {
   }
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
       <HomeNav />
-      <h1 className="text-4xl sm:text-5xl font-bold text-center text-gray-600 my-12 sm:my-24">
+      <h1 className={`text-4xl sm:text-5xl font-bold text-center my-12 sm:my-24 ${isDarkMode ? 'text-[#BDBDBD]' : 'text-gray-600'}`}>
         ATTENDANCE
       </h1>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 text-center sm:text-left">
-        <label htmlFor="date-picker" className="text-lg sm:text-xl text-gray-700">
+        <label htmlFor="date-picker" className={`text-lg sm:text-xl ${isDarkMode ? 'text-[#BDBDBD]' : 'text-gray-700'}`}>
           Select Date:
         </label>
         <div className="flex items-center gap-4">
@@ -131,13 +133,13 @@ const LiveReport: React.FC = () => {
             id="date-picker"
             selected={selectedDate}
             onChange={date => setSelectedDate(date)}
-            className="p-2 text-base sm:text-lg border rounded-lg border-gray-300 flex-shrink-0"
+            className={`p-2 text-base sm:text-lg border rounded-lg flex-shrink-0 ${isDarkMode ? 'border-gray-600 bg-gray-800 text-gray-300' : 'border-gray-300 bg-white text-black'}`}
             dateFormat="dd/MM/yyyy"
             placeholderText="Click to select a date"
           />
           <button
             onClick={filterByDate}
-            className="bg-[#7D0A0A] text-[#EAD196] p-2 rounded-lg text-base sm:text-lg font-bold"
+            className={`p-2 rounded-lg text-base sm:text-lg font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196]' : 'bg-[#7D0A0A] text-[#EAD196]'}`}
           >
             Apply
           </button>
@@ -146,10 +148,10 @@ const LiveReport: React.FC = () => {
       <div className="flex flex-col items-center gap-5 mb-8">
         {filteredData.length > 0 ? (
           filteredData.map((item) => (
-            <div key={item.id} className="bg-[#EAD196] p-5 rounded-lg w-full max-w-3xl flex justify-between items-center shadow-md">
+            <div key={item.id} className={`p-5 rounded-lg w-full max-w-3xl flex justify-between items-center shadow-md ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-black'}`}>
               <div className="flex-1 mr-5 text-left">
                 <div className="text-2xl font-bold mb-1">{item.assisstant_code}</div>
-                <div className="text-lg text-gray-800">{item.name}</div>
+                <div className={`text-lg ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-800'}`}>{item.name}</div>
               </div>
               <div className="text-right">
                 <div className="text-lg font-bold">{formatDate(item.time)}</div>
@@ -158,25 +160,25 @@ const LiveReport: React.FC = () => {
             </div>
           ))
         ) : (
-          <div className="text-lg text-gray-600">No data found</div>
+          <div className={`text-lg ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>No data found</div>
         )}
       </div>
       <div className="flex justify-center items-center my-5">
         {currentPage > 1 && (
           <button
             onClick={handlePreviousPage}
-            className="bg-red-800 text-[#EAD196] p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors hover:bg-red-700"
+            className={`p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-600' : 'bg-red-800 text-[#EAD196] hover:bg-red-700'}`}
           >
             ◀
           </button>
         )}
-        <button className="bg-red-800 text-[#EAD196] p-3 rounded-full mx-2 text-lg sm:text-xl font-bold" disabled>
+        <button className={`p-3 rounded-full mx-2 text-lg sm:text-xl font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196]' : 'bg-red-800 text-[#EAD196]'}`} disabled>
           PAGE {currentPage}
         </button>
         {currentPage < totalPages && (
           <button
             onClick={handleNextPage}
-            className="bg-red-800 text-[#EAD196] p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors hover:bg-red-700"
+            className={`p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-600' : 'bg-red-800 text-[#EAD196] hover:bg-red-700'}`}
           >
             ▶
           </button>
@@ -185,6 +187,6 @@ const LiveReport: React.FC = () => {
       <Footer />
     </div>
   );
-};  
+};
 
 export default LiveReport;
