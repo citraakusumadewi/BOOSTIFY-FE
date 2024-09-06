@@ -64,6 +64,12 @@ const OurTeam: React.FC = () => {
                 </div>
                 <p className={`${isDarkMode ? 'text-yellow-200' : 'text-[#EAD196]'} text-base sm:text-lg`}>LIA</p>
               </div>
+              <div className="text-center">
+                <div className="rounded-full overflow-hidden w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-2">
+                  <Image src="/kharisma.jpg" alt="ATX" width={80} height={80} className="object-cover" />
+                </div>
+                <p className={`${isDarkMode ? 'text-yellow-200' : 'text-[#EAD196]'} text-base sm:text-lg`}>ATX</p>
+              </div>
             </div>
           </div>
           <div className="bg-[#7D0A0A] text-yellow-100 p-6 md:p-8 rounded-lg shadow-lg w-full max-w-md lg:max-w-lg xl:max-w-2xl">

@@ -88,10 +88,10 @@ const SignIn: React.FC = () => {
       </div>
 
       {/* Right Section - Sign In Form */}
-      <div className="flex flex-col items-center justify-center w-full md:w-1/2 p-8 bg-[#D7B66A] md:bg-[#D7B66A] bg-white">
-
+      <div className="flex flex-col items-center justify-center w-full md:w-1/2 p-8 bg-[#D7B66A] md:bg-[#EDD291] bg-white">
+        
         {/* Show logo above form for small screens */}
-        <div className="md:hidden mb-8 text-center">
+        <div className="md:hidden mb-8 mt--16 text-center"> {/* Tambahkan mt-8 untuk geser ke bawah */}
           <Image 
             src="/logo.png" 
             alt="Boostify Logo" 
@@ -100,7 +100,9 @@ const SignIn: React.FC = () => {
             className="mx-auto"
           />
         </div>
-        <div className="w-full max-w-md bg-[#7D0A0A] p-8 rounded-lg">
+        
+        {/* Form Sign In */}
+        <div className="w-full max-w-md bg-[#7D0A0A] p-8 rounded-lg -mt-12"> {/* Tambahkan mt-4 untuk geser form */}
           <h2 className="text-3xl mb-8 font-bold text-[#EAD196] text-center">
             Sign In to Your Account
           </h2>
