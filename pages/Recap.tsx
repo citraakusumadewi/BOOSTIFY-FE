@@ -120,10 +120,10 @@ const Recap: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-gray-900'}`}>
       <HomeNav />
       <main className="flex-1 px-4 py-6 text-center sm:px-6 md:px-10 lg:px-16 xl:px-24">
-        <h2 className="text-3xl font-bold text-gray-600 mb-16 sm:text-4xl lg:text-5xl xl:my-24">
+        <h2 className={`text-3xl font-bold mb-16 sm:text-4xl lg:text-5xl xl:my-24 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
           ATTENDANCE RECAP
         </h2>
 
@@ -152,10 +152,10 @@ const Recap: React.FC = () => {
                       width={80}
                       height={80}
                     />
-                    <div className="bg-[#EAD196] w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10">
+                    <div className={`w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-gray-900'}`}>
                       <span>{attendee.assisstant_code}</span>
                     </div>
-                    <p className="text-3xl font-bold text-gray-800 mt-2">{attendee.totalAttendance}</p>
+                    <p className={`text-3xl font-bold text-gray-800 mt-2  ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{attendee.totalAttendance}</p>
                   </div>
                 </div>
               );
@@ -163,17 +163,17 @@ const Recap: React.FC = () => {
           </div>
 
             <div className="relative inline-block text-right mt-10 sm:mt-20">
-              <button onClick={toggleFilter} className="text-[#3F3C38] text-base flex items-center">
+              <button onClick={toggleFilter} className={`text-[#3F3C38] text-base flex items-center ${isDarkMode ? 'text-white' : 'text-[#3F3C38]'}`}>
                 Filter
               </button>
               {filterOpen && (
-                <div ref={dropdownRef} className="absolute right-0 bg-[#EAD196] shadow-lg rounded-lg p-4 mt-2">
-                  <p className="font-bold mb-2">Sort By:</p>
-                  <ul className="list-none p-0 m-0">
-                    <li className="text-[#3F3C38] text-sm cursor-pointer py-1 hover:underline">
+                <div ref={dropdownRef} className={`absolute right-0 shadow-lg rounded-lg p-4 mt-2 ${isDarkMode ? 'bg-[#D7B66A]' : 'bg-[#EAD196]'}`}>
+                  <p className={`font-bold mb-2 ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-900'}`}>Sort By:</p>
+                  <ul>
+                    <li className={`text-sm cursor-pointer py-1 hover:underline ${isDarkMode ? 'text-[#3F3C38]' : 'text-[#3F3C38]'}`}>
                       <DatePicker selected={startDate} onChange={handleDateChange} placeholderText="Select Date" />
                     </li>
-                    <li onClick={toggleFilter} className="text-[#3F3C38] text-sm cursor-pointer py-1 hover:underline">
+                    <li onClick={toggleFilter} className={`text-sm cursor-pointer py-1 hover:underline ${isDarkMode ? 'text-[#3F3C38]' : 'text-[#3F3C38]'}`}>
                       Assistant Code
                     </li>
                   </ul>
@@ -181,38 +181,32 @@ const Recap: React.FC = () => {
               )}
             </div>
 
+            {/* Cards */}
             <div className="max-w-3xl mx-auto mt-10 mb-10">
               {attendanceData.map((attendee, index) => (
-                <div
-                  key={index}
-                  className="bg-[#EAD196] flex justify-between items-center p-[20px] my-4 rounded-lg shadow-lg w-full"
-                >
+                <div key={index} className={`flex justify-between items-center p-5 my-4 rounded-lg shadow-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-[#3F3C38]'}`}>
                   <div className="text-left">
-                    <h3 className="text-2xl font-bold text-[#3F3C38]">{attendee.assisstant_code}</h3>
-                    <p className="text-lg text-[#4A4A4A]">{attendee.name}</p>
+                    <h3 className={`text-2xl font-bold ${isDarkMode ? 'text-[#3F3C38]' : 'text-[#4A4A4A]'}`}>{attendee.assisstant_code}</h3>
+                    <p className={`text-lg ${isDarkMode ? 'text-[#3F3C38]' : 'text-[#4A4A4A]'}`}>{attendee.name}</p>
                   </div>
-                  <div className="flex items-center">
-                    <div className="bg-[#7D0A0A] rounded-lg p-4 flex items-center justify-center shadow-lg w-[75px] h-[60px] text-2xl text-[#EAD196] text-center">
-                      {attendee.totalAttendance}
-                    </div>
+                  <div className={`rounded-lg p-4 flex items-center justify-center shadow-lg w-[75px] h-[60px] text-2xl text-center font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A]' : 'bg-[#7D0A0A] text-[#EAD196]'}`}>
+                    {attendee.totalAttendance}
                   </div>
                 </div>
               ))}
             </div>
           </div>
         ) : (
-          // Other pages layout
+          // Layout for other pages
           <div className="mx-auto max-w-md sm:max-w-xl lg:max-w-2xl">
             {attendanceData.map((attendee, index) => (
-              <div key={index} className="bg-[#EAD196] flex justify-between p-5 mb-5 rounded-lg shadow-md">
+              <div key={index} className={`flex justify-between p-5 mb-5 rounded-lg shadow-md ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-[#3F3C38]'}`}>
                 <div className="text-left">
-                  <h3 className="text-xl font-bold text-gray-800">{attendee.assisstant_code}</h3>
-                  <p className="text-lg text-gray-600">{attendee.name}</p>
+                  <h3 className={`text-xl font-bold ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-800'}`}>{attendee.assisstant_code}</h3>
+                  <p className={`text-lg ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-600'}`}>{attendee.name}</p>
                 </div>
-                <div className="flex items-center">
-                  <div className="bg-red-800 text-[#EAD196] rounded-lg p-2 flex items-center justify-center shadow-md w-20 h-15 text-xl text-center">
-                    {attendee.totalAttendance}
-                  </div>
+                <div className={`rounded-lg p-2 flex items-center justify-center shadow-md w-20 h-15 text-xl text-center font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A]' : 'bg-[#7D0A0A] text-[#EAD196]'}`}>
+                  {attendee.totalAttendance}
                 </div>
               </div>
             ))}
@@ -221,21 +215,15 @@ const Recap: React.FC = () => {
 
         <div className="flex justify-center items-center my-5">
           {currentPage > 1 && (
-            <button
-              onClick={handlePreviousPage}
-              className="bg-red-800 text-[#EAD196] p-2 rounded-full mx-2 text-xl transition-colors hover:bg-red-700"
-            >
+            <button onClick={handlePreviousPage} className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-gray-500 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}>
               ◀
             </button>
           )}
-          <button className="bg-red-800 text-[#EAD196] p-3 rounded-full mx-2 text-xl font-bold" disabled>
+          <button className={`text-[#EAD196] p-3 rounded-full mx-2 text-xl font-bold ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-gray-500 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`} disabled>
             PAGE {currentPage}
           </button>
           {currentPage < totalPages && (
-            <button
-              onClick={handleNextPage}
-              className="bg-red-800 text-[#EAD196] p-2 rounded-full mx-2 text-xl transition-colors hover:bg-red-700"
-            >
+            <button onClick={handleNextPage} className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-gray-500 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}>
               ▶
             </button>
           )}
