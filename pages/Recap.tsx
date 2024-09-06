@@ -101,7 +101,14 @@ const Recap: React.FC = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className={`loaderContainer flex justify-center items-center h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-gray-900'}`}>
+        <div className="loader relative w-12 aspect-[1/1] rounded-full border-[8px] border-transparent border-r-[#ffa50097] animate-spin">
+          <div className="absolute inset-[-8px] rounded-full border-[inherit] animate-[spin_2s_linear_infinite]"></div>
+          <div className="absolute inset-[-8px] rounded-full border-[inherit] animate-[spin_4s_linear_infinite]"></div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -152,20 +159,20 @@ const Recap: React.FC = () => {
                       width={80}
                       height={80}
                     />
-                    <div className={`w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-gray-900'}`}>
+                    <div className={`w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}>
                       <span>{attendee.assisstant_code}</span>
                     </div>
-                    <p className={`text-3xl font-bold text-gray-800 mt-2  ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{attendee.totalAttendance}</p>
+                    <p className={`text-3xl font-bold text-[#3F3C38] mt-2  ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#3F3C38]'}`}>{attendee.totalAttendance}</p>
                   </div>
                 </div>
               );
             })}
           </div>
 
-            <div className="relative inline-block text-right mt-10 sm:mt-20">
-              <button onClick={toggleFilter} className={`text-[#3F3C38] text-base flex items-center ${isDarkMode ? 'text-white' : 'text-[#3F3C38]'}`}>
-                Filter
-              </button>
+          <div className="flex justify-end mt-7 mb-6">
+            <button onClick={toggleFilter} className={`text-base flex items-center ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#3F3C38]'}`}>
+              Filter
+            </button>
               {filterOpen && (
                 <div ref={dropdownRef} className={`absolute right-0 shadow-lg rounded-lg p-4 mt-2 ${isDarkMode ? 'bg-[#D7B66A]' : 'bg-[#EAD196]'}`}>
                   <p className={`font-bold mb-2 ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-900'}`}>Sort By:</p>
@@ -205,7 +212,7 @@ const Recap: React.FC = () => {
                   <h3 className={`text-xl font-bold ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-800'}`}>{attendee.assisstant_code}</h3>
                   <p className={`text-lg ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-600'}`}>{attendee.name}</p>
                 </div>
-                <div className={`rounded-lg p-2 flex items-center justify-center shadow-md w-20 h-15 text-xl text-center font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A]' : 'bg-[#7D0A0A] text-[#EAD196]'}`}>
+                <div className={`rounded-lg p-4 flex items-center justify-center shadow-lg w-[75px] h-[60px] text-2xl text-center font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A]' : 'bg-[#7D0A0A] text-[#EAD196]'}`}>
                   {attendee.totalAttendance}
                 </div>
               </div>
@@ -215,15 +222,15 @@ const Recap: React.FC = () => {
 
         <div className="flex justify-center items-center my-5">
           {currentPage > 1 && (
-            <button onClick={handlePreviousPage} className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-gray-500 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}>
+            <button onClick={handlePreviousPage} className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}>
               ◀
             </button>
           )}
-          <button className={`text-[#EAD196] p-3 rounded-full mx-2 text-xl font-bold ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-gray-500 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`} disabled>
+          <button className={`text-[#EAD196] p-3 rounded-full mx-2 text-xl font-bold ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`} disabled>
             PAGE {currentPage}
           </button>
           {currentPage < totalPages && (
-            <button onClick={handleNextPage} className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-gray-500 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}>
+            <button onClick={handleNextPage} className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}>
               ▶
             </button>
           )}

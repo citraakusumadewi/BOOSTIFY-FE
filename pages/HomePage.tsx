@@ -40,12 +40,12 @@ const HomePage: React.FC = () => {
           ATTENDANCE
         </h2>
         <Link href="/LiveReport" passHref>
-          <button className={`py-3 sm:py-4 px-6 sm:px-8 rounded font-bold transition-colors ${isDarkMode ? 'bg-red-900 text-yellow-200 hover:bg-red-800' : 'bg-red-800 text-yellow-100 hover:bg-red-700'}`}>
+          <button className={`py-3 sm:py-4 px-6 sm:px-8 rounded font-bold transition-colors ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`}>
             LIVE REPORT
           </button>
         </Link>
         <Link href="/Recap" passHref>
-          <button className={`py-3 sm:py-4 px-6 sm:px-8 rounded font-bold transition-colors ${isDarkMode ? 'bg-red-900 text-yellow-200 hover:bg-red-800' : 'bg-red-800 text-yellow-100 hover:bg-red-700'}`}>
+          <button className={`py-3 sm:py-4 px-6 sm:px-8 rounded font-bold transition-colors ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`}>
             RECAP
           </button>
         </Link>
