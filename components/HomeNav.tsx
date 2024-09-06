@@ -113,43 +113,43 @@ const HomeNav: React.FC = () => {
           <ul className={`flex-col items-center gap-8 transition-all duration-300 md:flex ${isMenuOpen ? 'flex' : 'hidden'} ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'} absolute top-20 left-0 right-0 p-4 md:static md:flex-row md:shadow-none shadow-lg z-50`}>
             <li className="w-full text-center md:w-auto">
               <Link href="/About" passHref>
-                <span className={`font-medium ${isDarkMode ? 'text-[#EAD196]' : 'text-red-700'}`}>
+                <span className={`font-medium ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}>
                   About
                 </span>
               </Link>
             </li>
             <li className="w-full text-center md:w-auto">
               <Link href="/Team" passHref>
-                <span className={`font-medium ${isDarkMode ? 'text-[#EAD196]' : 'text-red-700'}`}>
+                <span className={`font-medium ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}>
                   Our Team
                 </span>
               </Link>
             </li>
             <li className="w-full text-center md:w-auto">
               <Link href="/LiveReport" passHref>
-                <span className={`font-medium ${isDarkMode ? 'text-[#EAD196]' : 'text-red-700'}`}>
+                <span className={`font-medium ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}>
                   Live Report
                 </span>
               </Link>
             </li>
             <li className="w-full text-center md:w-auto">
               <Link href="/Recap" passHref>
-                <span className={`font-medium ${isDarkMode ? 'text-[#EAD196]' : 'text-red-700'}`}>
+                <span className={`font-medium ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}>
                   Recap
                 </span>
               </Link>
             </li>
             <li className="w-full text-center md:w-auto">
-              <button onClick={() => setShowPopup(true)} className={`font-bold ${isDarkMode ? 'text-[#EAD196]' : 'text-red-700'}`}>
+              <button onClick={() => setShowPopup(true)} className={`font-bold ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}>
                 Sign Out
               </button>
             </li>
           </ul>
           <Link href="/Profile" passHref>
             <div className="bg-transparent border-none cursor-pointer">
-              <div className="flex items-center justify-center bg-[#EAD196] rounded-full w-12 h-12">
+              <div className={`flex items-center justify-center rounded-full w-12 h-12 ${isDarkMode ? 'bg-[#D7B66A]' : 'bg-[#EAD196]'}`}>
                 {assistantCode && (
-                  <span className="text-red-700 font-bold text-sm">{assistantCode}</span>
+                  <span className={`font-bold text-sm ${isDarkMode ? 'text-[#5B0A0A]' : 'text-[#7D0A0A]'}`}>{assistantCode}</span>
                 )}
               </div>
             </div>

@@ -66,59 +66,146 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className={`flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 md:px-8 lg:px-10 ${isDarkMode ? 'bg-[#0D0D0D]' : 'bg-gray-100'}`}>
-      <div className="mb-10 sm:mb-8 lg:mb-10">
-        <Link href="/">
-          <Image src="/logo.png" alt="Boostify Logo" width={200} height={100} className="cursor-pointer" />
-        </Link>
+    <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
+      {/* Mobile Only Section */}
+      <div className="sm:hidden flex flex-col items-center justify-center w-full p-8">
+        {/* Mobile Logo */}
+        <div className="mb-1 -mt-12 text-center">
+          <Image 
+            src="/Boostifylogo.png" 
+            alt="Boostify Logo" 
+            width={400} 
+            height={400} 
+            className="mx-auto"
+          />
+        </div>
+
+        {/* Mobile Sign In Form */}
+        <div className={`w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
+          <h2 className={`text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
+            Sign In to Your Account
+          </h2>
+          <form className="flex flex-col gap-5" onSubmit={handleSignIn}>
+            <div className="flex flex-col w-full">
+              <label htmlFor="assistantCode" className="sr-only">Assistant Code</label>
+              <input
+                type="text"
+                id="assistantCode"
+                className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                placeholder="Assistant Code"
+                value={assistantCode}
+                onChange={handleAssistantCodeChange}
+                required
+              />
+            </div>
+
+            <div className="relative flex items-center w-full">
+              <label htmlFor="password" className="sr-only">Password</label>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className={`absolute right-4 ${isDarkMode ? 'text-[#5B0A0A]' : 'text-[#7D0A0A]'}`}
+              >
+                <Image
+                  src={showPassword ? '/eye-slash.png' : '/eye.png'}
+                  alt="Toggle Password Visibility"
+                  width={35}
+                  height={30}
+                />
+              </button>
+            </div>
+
+            {error && <div className="text-red-500 mt-2">{error}</div>}
+            <button
+              type="submit"
+              className={`py-2 px-4 rounded font-bold transition-colors mt-6 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+              disabled={loading}
+            >
+              {loading ? 'Signing In...' : 'Sign In'}
+            </button>
+          </form>
+        </div>
       </div>
-      <div className={`p-6 sm:p-8 md:p-10 lg:p-12 rounded-lg shadow-lg max-w-sm w-full ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
-        <h2 className={`text-xl text-center sm:text-3xl md:text-4xl lg:text-5xl mb-6 font-bold ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#EAD196]'}`}>Sign In to Your Account</h2>
-        <form className="flex flex-col gap-4" onSubmit={handleSignIn}>
-        <div className="flex flex-col w-full">
-          <label htmlFor="assistantCode" className="sr-only">Assistant Code</label>
-          <input
-            type="text"
-            id="assistantCode"
-            className={`p-4 rounded border-none text-lg placeholder:text-[#5B0A0A] ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#F3EDC8] text-[#BF3131]'} w-full`}
-            placeholder="Assistant Code"
-            value={assistantCode}
-            onChange={handleAssistantCodeChange}
-            required
+
+      {/* Desktop Only Section */}
+      <div className="hidden sm:flex flex-row w-full min-h-screen">
+        {/* Left Section - Logo and Tagline for larger screens */}
+        <div className="w-1/2 flex items-center justify-center">
+          <Image 
+            src="/logoTagline.png" 
+            alt="Boostify Logo" 
+            width={800} 
+            height={800} 
+            className="mx-auto"
           />
         </div>
-        <div className="relative flex items-center w-full">
-          <label htmlFor="password" className="sr-only">Password</label>
-          <input
-            type={showPassword ? 'text' : 'password'}
-            id="password"
-            className={`p-4 rounded border-none text-lg placeholder:text-[#5B0A0A] ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#F3EDC8] text-[#BF3131]'} w-full`}
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className={`absolute right-4 cursor-pointer ${isDarkMode ? 'text-[#5B0A0A]' : 'text-[#BF3131]'}`}
-          >
-            <Image
-              src={showPassword ? '/eye-slash.png' : '/eye.png'}
-              alt="Toggle Password Visibility"
-              width={35} height={30}
-            />
-          </button>
+
+        {/* Right Section - Larger screen sign-in form */}
+        <div className={`w-1/2 flex items-center justify-center ${isDarkMode ? 'bg-[#D7B66A]' : 'bg-[#EAD196]'}`}>
+          {/* Form Sign In */}
+          <div className={`w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
+            <h2 className={`text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
+              Sign In to Your Account
+            </h2>
+            <form className="flex flex-col gap-5" onSubmit={handleSignIn}>
+              <div className="flex flex-col w-full">
+                <label htmlFor="assistantCode" className="sr-only">Assistant Code</label>
+                <input
+                  type="text"
+                  id="assistantCode"
+                  className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                  placeholder="Assistant Code"
+                  value={assistantCode}
+                  onChange={handleAssistantCodeChange}
+                  required
+                />
+              </div>
+
+              <div className="relative flex items-center w-full">
+                <label htmlFor="password" className="sr-only">Password</label>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={`absolute right-4 ${isDarkMode ? 'text-[#5B0A0A]' : 'text-[#7D0A0A]'}`}
+                >
+                  <Image
+                    src={showPassword ? '/eye-slash.png' : '/eye.png'}
+                    alt="Toggle Password Visibility"
+                    width={35}
+                    height={30}
+                  />
+                </button>
+              </div>
+
+              {error && <div className="text-red-500 mt-2">{error}</div>}
+              <button
+                type="submit"
+                className={`py-2 px-4 rounded font-bold transition-colors mt-6 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                disabled={loading}
+              >
+                {loading ? 'Signing In...' : 'Sign In'}
+              </button>
+            </form>
+          </div>
         </div>
-          {error && <div className="text-red-500 mt-2">{error}</div>}
-          <button
-            type="submit"
-            className={`py-2 px-4 rounded font-bold transition-colors ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A] hover:bg-[#EAD196]' : 'bg-[#F3EDC8] text-[#BF3131] hover:bg-[#EAD196]'} mt-4`}
-            disabled={loading}
-          >
-            {loading ? 'Signing In...' : 'Sign In'}
-          </button>
-        </form>
       </div>
     </div>
   );

@@ -52,9 +52,9 @@ const Navbar = () => {
 
         {/* Navbar Links */}
         <ul className={`md:flex items-center gap-6 ml-0 ${isMenuOpen ? 'flex flex-col mt-4 md:mt-0' : 'hidden'} absolute md:static top-20 left-0 right-0 ${isDarkMode ? 'bg-[#0D0D0D]' : 'bg-white'} md:bg-transparent shadow-md md:shadow-none rounded-md md:rounded-none p-4 md:p-0 z-50`}>
-          <li><Link href="/About" className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'} font-medium hover:text-[#7D0A0A]`}>About</Link></li>
-          <li><Link href="/Team" className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'} font-medium hover:text-[#7D0A0A]`}>Our Team</Link></li>
-          <li><Link href="/SignIn" className={`${isDarkMode ? 'text-[#EAD196]' : 'text-[#b91c1c]'} font-bold hover:text-[#7D0A0A]`}>Sign In</Link></li>
+          <li><Link href="/About" className={`${isDarkMode ? 'text-[#D7B66A] hover:text-[#7D0A0A]' : 'text-[#7D0A0A] hover:text-[#D7B66A]'} font-medium`}>About</Link></li>
+          <li><Link href="/Team" className={`${isDarkMode ? 'text-[#D7B66A] hover:text-[#7D0A0A]' : 'text-[#7D0A0A] hover:text-[#D7B66A]'} font-medium`}>Our Team</Link></li>
+          <li><Link href="/SignIn" className={`${isDarkMode ? 'text-[#EAD196] hover:text-[#7D0A0A]' : 'text-[#b91c1c] hover:text-[#D7B66A]'} font-bold`}>Sign In</Link></li>
         </ul>
       </nav>
     </header>

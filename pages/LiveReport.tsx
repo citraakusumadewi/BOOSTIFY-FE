@@ -4,6 +4,9 @@ import Footer from '../components/Footer';
 import DatePicker from 'react-datepicker';
 import { useTheme } from '../styles/ThemeContext';
 import 'react-datepicker/dist/react-datepicker.css';
+import { toZonedTime, format } from 'date-fns-tz';  // Import format from date-fns-tz
+
+const TIMEZONE = 'Asia/Jakarta'; // Define timeZone
 
 interface AttendanceItem {
   id: number;
@@ -21,12 +24,12 @@ interface ApiResponse {
 
 const LiveReport: React.FC = () => {
   const [attendanceData, setAttendanceData] = useState<AttendanceItem[]>([]);
-  const [filteredData, setFilteredData] = useState<AttendanceItem[]>([]); // state untuk data terfilter
+  const [filteredData, setFilteredData] = useState<AttendanceItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const { isDarkMode } = useTheme(); // Get the theme (dark/light mode)
+  const { isDarkMode } = useTheme();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -51,7 +54,7 @@ const LiveReport: React.FC = () => {
 
           const data: ApiResponse = await response.json();
           setAttendanceData(data.assistances);
-          setFilteredData(data.assistances); // set data awal terfilter
+          setFilteredData(data.assistances);
           setTotalPages(data.totalPages);
         } catch (error: any) {
           console.error('Failed to fetch attendance data:', error.message);
@@ -66,23 +69,15 @@ const LiveReport: React.FC = () => {
   }, [currentPage]);
 
   const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    const date = new Date(dateString);
+    const zonedDate = toZonedTime(date, TIMEZONE);
+    return format(zonedDate, 'EEEE, MMMM d, yyyy', { timeZone: TIMEZONE });
   };
 
   const formatTime = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true,
-    };
-    return new Date(dateString).toLocaleTimeString(undefined, options);
+    const date = new Date(dateString);
+    const zonedDate = toZonedTime(date, TIMEZONE);
+    return format(zonedDate, 'HH:mm:ss', { timeZone: TIMEZONE });
   };
 
   const handleNextPage = () => {
@@ -100,26 +95,29 @@ const LiveReport: React.FC = () => {
   const filterByDate = () => {
     if (selectedDate) {
       const filtered = attendanceData.filter(item => {
-        const itemDate = new Date(item.time).setHours(0, 0, 0, 0); // Hanya bandingkan tanggal tanpa waktu
+        const itemDate = new Date(item.time).setHours(0, 0, 0, 0);
         const selected = selectedDate.setHours(0, 0, 0, 0);
         return itemDate === selected;
       });
-      setFilteredData(filtered); // Set data terfilter
+      setFilteredData(filtered);
     } else {
-      setFilteredData(attendanceData); // Jika tidak ada tanggal yang dipilih, tampilkan semua data
+      setFilteredData(attendanceData);
     }
   };
 
   if (loading) {
-    return <div className="text-center mt-4">Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center mt-4 text-red-500">Error: {error}</div>;
+    return (
+      <div className={`loaderContainer flex justify-center items-center h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-gray-900'}`}>
+        <div className="loader relative w-12 aspect-[1/1] rounded-full border-[8px] border-transparent border-r-[#ffa50097] animate-spin">
+          <div className="absolute inset-[-8px] rounded-full border-[inherit] animate-[spin_2s_linear_infinite]"></div>
+          <div className="absolute inset-[-8px] rounded-full border-[inherit] animate-[spin_4s_linear_infinite]"></div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
+    <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-[#0D0D0D] text-[#BDBDBD]' : 'bg-white text-[#515151]'}`}>
       <HomeNav />
       <h1 className={`text-4xl sm:text-5xl font-bold text-center my-12 sm:my-24 ${isDarkMode ? 'text-[#BDBDBD]' : 'text-gray-600'}`}>
         ATTENDANCE
@@ -139,7 +137,7 @@ const LiveReport: React.FC = () => {
           />
           <button
             onClick={filterByDate}
-            className={`p-2 rounded-lg text-base sm:text-lg font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196]' : 'bg-[#7D0A0A] text-[#EAD196]'}`}
+            className={`p-2 rounded-lg text-base sm:text-lg font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`}
           >
             Apply
           </button>
@@ -147,9 +145,9 @@ const LiveReport: React.FC = () => {
       </div>
       <div className="p-5 flex flex-col items-center gap-5 mb-8">
         {filteredData.length > 0 ? (
-          filteredData.map((item) => (
+          filteredData.map((item: AttendanceItem, index: number) => (
             <div 
-              key={item.id} 
+              key={index} 
               className={`flex p-5 rounded-lg w-full  max-w-2xl sm:max-w-sm lg:max-w-2xl md:max-w-[100px] flex justify-between items-center shadow-md 
               ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-black'} 
               px-12 mx-4 sm:mx-4`}>
@@ -172,18 +170,18 @@ const LiveReport: React.FC = () => {
         {currentPage > 1 && (
           <button
             onClick={handlePreviousPage}
-            className={`p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-600' : 'bg-red-800 text-[#EAD196] hover:bg-red-700'}`}
+            className={`p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`}
           >
             ◀
           </button>
         )}
-        <button className={`p-3 rounded-full mx-2 text-lg sm:text-xl font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196]' : 'bg-red-800 text-[#EAD196]'}`} disabled>
+        <button className={`p-3 rounded-full mx-2 text-lg sm:text-xl font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`} disabled>
           PAGE {currentPage}
         </button>
         {currentPage < totalPages && (
           <button
             onClick={handleNextPage}
-            className={`p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-600' : 'bg-red-800 text-[#EAD196] hover:bg-red-700'}`}
+            className={`p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`}
           >
             ▶
           </button>

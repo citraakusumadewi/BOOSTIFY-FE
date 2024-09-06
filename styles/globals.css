@@ -8,71 +8,24 @@ body {
   color: var(--text-color);
 }
 
-:root {
-  --background-color: #ffffff;
-  --text-color: #000000;
-  --container-background-color: #f3f3f3;
-  --profile-button-bg: #EAD196;
-  --profile-button-color: #7D0A0A;
-}
+@layer components {
+  .eye {
+    @apply w-5 h-5 bg-white rounded-full relative;
+    background: radial-gradient(farthest-side, #000 95%, transparent) 35% 35% / 6px 6px no-repeat;
+    animation: move-eye 3s infinite;
+  }
 
-/* Light mode */
-.light-mode {
-  --background-color: #ffffff;
-  --text-color: #7D0A0A;
-  --container-background-color: #f3f3f3;
-  --profile-button-bg: #EAD196; /* Warna background tombol profil */
-  --profile-button-color: #7D0A0A; /* Warna teks tombol profil */
-}
-
-/* Dark mode */
-.dark-mode {
-  --background-color: #0D0D0D;
-  --text-color: #3F3C38;
-  --container-background-color: #333333;
-  --profile-button-bg: #D7B66A; /* Warna background tombol profil */
-  --profile-button-color: #5B0A0A; /* Warna teks tombol profil */
-}
-
-/* Apply styles to specific components */
-.container {
-  background-color: var(--container-background-color);
-  padding: 20px;
-  border-radius: 10px;
-}
-
-/* Example navbar styling */
-.navbarContainer {
-  background-color: var(--container-background-color);
-  display: flex;
-  align-items: center;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  gap: 1rem;
-}
-
-.navLink {
-  color: var(--text-color);
-}
-
-/* Styling for buttons */
-
-
-
-/* Media queries for responsiveness */
-@media (max-width: 1200px) {
-  .dark-mode .navbarContainer {
-    background-color: #0D0D0D; /* Adjust as needed */
+  .eye-container {
+    @apply absolute flex gap-5 z-10;
   }
 }
 
-@media (max-width: 768px) {
-  .navbarContainer {
-    flex-direction: column; /* Stack navbar items vertically */
+@layer keyframes {
+  @keyframes move-eye {
+    0%, 11%   { background-position: 35% 35%; }
+    14%, 36%  { background-position: 65% 35%; }
+    38%, 61%  { background-position: 65% 65%; }
+    64%, 86%  { background-position: 35% 65%; }
+    88%, 100% { background-position: 35% 35%; }
   }
 }
-
-/* globals.css */
-

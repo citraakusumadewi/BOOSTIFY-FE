@@ -11,10 +11,12 @@ type AttendanceItem = {
 
 const formatTime = (dateString: string) => {
   const date = new Date(dateString);
-  return date.toLocaleTimeString('en-US', {
+  console.log('Original:', dateString, 'Converted:', date);
+  return date.toLocaleTimeString('id-ID', {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
+    timeZone: 'Asia/Jakarta',
   });
 };
 
@@ -178,7 +180,7 @@ const Profile: React.FC = () => {
   }, []);
 
   return (
-    <div className={`max-w-7xl mx-auto ${isDarkMode ? 'bg-[#0D0D0D] text-[#BDBDBD]' : 'bg-white text-[#515151]'}`}>
+    <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-[#BDBDBD]' : 'bg-white text-[#515151]'}`}>
       <HomeNav />
       <main className="px-4 py-10">
         <div className={`flex flex-col items-center mb-10 ${isDarkMode ? 'text-white' : 'text-black'}`}>
@@ -229,8 +231,8 @@ const Profile: React.FC = () => {
       </main>
       <Footer />
       {showModal && (
-        <div className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50`}>
-          <div className={`p-6 sm:p-6 rounded-lg text-center w-56 sm:w-64 relative ${isDarkMode ? 'bg-[#3F3C38] text-[#BDBDBD]' : 'bg-white text-gray-800'}`}>
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className={`p-6 sm:p-6 rounded-lg text-center w-72 sm:w-80 relative ${isDarkMode ? 'bg-[#3F3C38] text-[#BDBDBD]' : 'bg-white text-gray-800'}`}>
             <button
               className="absolute top-2 right-2 text-lg font-bold"
               onClick={() => setShowModal(false)}
@@ -241,22 +243,25 @@ const Profile: React.FC = () => {
               Edit Profile Picture
             </h3>
 
-            <label className={`inline-block py-2 px-4 rounded cursor-pointer mb-4 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}>
-              <input
-                type="file"
-                accept="image/jpeg,image/jpg,image/png,image/heic"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-              Choose File
-            </label>
+            {/* Conditional rendering based on whether a file is selected */}
+            <div className={`flex ${selectedFileName ? 'justify-start' : 'justify-center'} items-center mb-4`}>
+              <label className={`inline-block py-2 px-4 rounded cursor-pointer ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/heic"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                Choose File
+              </label>
 
-            {/* Show the selected file name */}
-            {selectedFileName && (
-              <p className={`mt-2 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                {selectedFileName}
-              </p>
-            )}
+              {/* Show the selected file name if a file is chosen */}
+              {selectedFileName && (
+                <p className={`ml-4 text-sm truncate ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  {selectedFileName}
+                </p>
+              )}
+            </div>
 
             <div className="flex justify-between gap-4 mt-6">
               <button
