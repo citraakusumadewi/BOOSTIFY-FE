@@ -145,10 +145,15 @@ const LiveReport: React.FC = () => {
           </button>
         </div>
       </div>
-      <div className="flex flex-col items-center gap-5 mb-8">
+      <div className="p-5 flex flex-col items-center gap-5 mb-8">
         {filteredData.length > 0 ? (
           filteredData.map((item) => (
-            <div key={item.id} className={`p-5 rounded-lg w-full max-w-3xl flex justify-between items-center shadow-md ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-black'}`}>
+            <div 
+              key={item.id} 
+              className={`flex p-5 rounded-lg w-full  max-w-2xl sm:max-w-sm lg:max-w-2xl md:max-w-[100px] flex justify-between items-center shadow-md 
+              ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-black'} 
+              px-12 mx-4 sm:mx-4`}>
+
               <div className="flex-1 mr-5 text-left">
                 <div className="text-2xl font-bold mb-1">{item.assisstant_code}</div>
                 <div className={`text-lg ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-800'}`}>{item.name}</div>
