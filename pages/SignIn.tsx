@@ -66,59 +66,96 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className={`flex flex-col items-center justify-center min-h-screen pt-12 pl-10 ${isDarkMode ? 'bg-[#0D0D0D]' : 'bg-gray-100'}`}>
-      <div className="mb-20">
-      <Link href="/">
-          <Image src="/logo.png" alt="Boostify Logo" width={200} height={100} className="cursor-pointer" />
-        </Link>
+    <div className="flex flex-col md:flex-row min-h-screen">
+      {/* Left Section - Logo and Tagline */}
+      <div className="hidden md:flex w-1/2 items-center justify-center bg-white">
+        <div className="text-center">
+          <Image 
+            src="/logo.png" 
+            alt="Boostify Logo" 
+            width={800} 
+            height={800} 
+            className="mx-auto"
+          />
+          <Image 
+            src="/tagline.png" 
+            alt="Tagline Logo" 
+            width={1000} 
+            height={1000} 
+            className="absolute top-52 left-[calc(50%+-500px)] w-[500px] h-auto mb-100 hidden lg:block" 
+          />
+        </div>
       </div>
-      <div className={`p-8 rounded-lg shadow-lg max-w-md w-full text-center ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
-        <h2 className={`text-2xl mb-8 font-bold ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#EAD196]'}`}>Sign In to Your Account</h2>
-        <form className="flex flex-col gap-5" onSubmit={handleSignIn}>
-          <div className="flex flex-col w-full">
-            <label htmlFor="assistantCode" className="sr-only">Assistant Code</label>
-            <input
-              type="text"
-              id="assistantCode"
-              className={`p-4 rounded border-none text-lg ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#F3EDC8] text-[#BF3131]'} w-full`}
-              placeholder="Assistant Code"
-              value={assistantCode}
-              onChange={handleAssistantCodeChange}
-              required
-            />
-          </div>
-          <div className="relative flex items-center w-full">
-            <label htmlFor="password" className="sr-only">Password</label>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              id="password"
-              className={`p-4 rounded border-none text-lg ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#F3EDC8] text-[#BF3131]'} w-full`}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className={`absolute right-4 cursor-pointer ${isDarkMode ? 'text-[#5B0A0A]' : 'text-[#BF3131]'}`}
-            >
-              <Image
-                src={showPassword ? '/eye-slash.png' : '/eye.png'}
-                alt="Toggle Password Visibility"
-                width={35} height={30}
+
+      {/* Right Section - Sign In Form */}
+      <div className="flex flex-col items-center justify-center w-full md:w-1/2 p-8 bg-[#D7B66A] md:bg-[#D7B66A] bg-white">
+
+        {/* Show logo above form for small screens */}
+        <div className="md:hidden mb-8 text-center">
+          <Image 
+            src="/logo.png" 
+            alt="Boostify Logo" 
+            width={200} 
+            height={200} 
+            className="mx-auto"
+          />
+        </div>
+        <div className="w-full max-w-md bg-[#7D0A0A] p-8 rounded-lg">
+          <h2 className="text-3xl mb-8 font-bold text-[#EAD196] text-center">
+            Sign In to Your Account
+          </h2>
+          <form className="flex flex-col gap-5" onSubmit={handleSignIn}>
+            <div className="flex flex-col w-full">
+              <label htmlFor="assistantCode" className="sr-only">Assistant Code</label>
+              <input
+                type="text"
+                id="assistantCode"
+                className="p-4 rounded bg-[#EAD196] text-lg w-full"
+                style={{ color: '#7D0A0A' }}
+                placeholder="Assistant Code"
+                value={assistantCode}
+                onChange={handleAssistantCodeChange}
+                required
               />
+            </div>
+
+            <div className="relative flex items-center w-full">
+              <label htmlFor="password" className="sr-only">Password</label>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                className="p-4 rounded bg-[#EAD196] text-lg w-full"
+                style={{ color: '#7D0A0A' }}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 text-[#7D0A0A]"
+              >
+                <Image
+                  src={showPassword ? '/eye-slash.png' : '/eye.png'}
+                  alt="Toggle Password Visibility"
+                  width={35}
+                  height={30}
+                />
+              </button>
+            </div>
+
+            {error && <div className="text-red-500 mt-2">{error}</div>}
+            <button
+              type="submit"
+              className="py-2 px-4 rounded font-bold bg-[#EAD196] text-[#7D0A0A] hover:bg-yellow-300 transition-colors mt-6"
+              disabled={loading}
+            >
+              {loading ? 'Signing In...' : 'Sign In'}
             </button>
-          </div>
-          {error && <div className="text-red-500 mt-2">{error}</div>}
-          <button
-            type="submit"
-            className={`py-2 px-4 rounded font-bold transition-colors ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A] hover:bg-yellow-300' : 'bg-[#F3EDC8] text-[#BF3131] hover:bg-yellow-200'} mt-6`}
-            disabled={loading}
-          >
-            {loading ? 'Signing In...' : 'Sign In'}
-          </button>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
