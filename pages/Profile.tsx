@@ -229,31 +229,48 @@ const Profile: React.FC = () => {
       </main>
       <Footer />
       {showModal && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-4 sm:p-5 rounded-lg text-center w-56 sm:w-64 relative">
-            <button className="absolute top-2 right-2 text-lg font-bold text-gray-700" onClick={() => setShowModal(false)}>
+        <div className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50`}>
+          <div className={`p-6 sm:p-6 rounded-lg text-center w-56 sm:w-64 relative ${isDarkMode ? 'bg-[#3F3C38] text-[#BDBDBD]' : 'bg-white text-gray-800'}`}>
+            <button
+              className="absolute top-2 right-2 text-lg font-bold"
+              onClick={() => setShowModal(false)}
+            >
               &times;
             </button>
-            <h3 className="mb-2 text-base sm:text-lg font-bold text-gray-800">Edit Profile Picture</h3>
-            
-            <label className="inline-block py-1 px-2 bg-[#D7B66A] text-[#7D0A0A] rounded cursor-pointer mb-2">
-              <input 
-                type="file" 
-                accept="image/jpeg,image/jpg,image/png,image/heic" 
+            <h3 className="mb-4 text-base sm:text-lg font-bold">
+              Edit Profile Picture
+            </h3>
+
+            <label className={`inline-block py-2 px-4 rounded cursor-pointer mb-4 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}>
+              <input
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,image/heic"
                 onChange={handleFileChange}
-                className="hidden" 
+                className="hidden"
               />
               Choose File
             </label>
 
-            {/* Tampilkan nama file yang dipilih di sini */}
+            {/* Show the selected file name */}
             {selectedFileName && (
-              <p className="mt-2 text-sm text-gray-600">{selectedFileName}</p>
+              <p className={`mt-2 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                {selectedFileName}
+              </p>
             )}
 
-            <div className="flex justify-between mt-4">
-              <button className="py-1 px-3 bg-[#7D0A0A] text-[#D7B66A] rounded font-bold" onClick={handleDeleteImage}>Delete Image</button>
-              <button className="py-1 px-3 bg-[#D7B66A] text-[#7D0A0A] rounded font-bold" onClick={() => setShowModal(false)}>Upload</button>
+            <div className="flex justify-between gap-4 mt-6">
+              <button
+                className={`py-2 px-4 rounded font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A]' : 'bg-[#7D0A0A] text-[#EAD196]'}`}
+                onClick={handleDeleteImage}
+              >
+                Delete Image
+              </button>
+              <button
+                className={`py-2 px-4 rounded font-bold ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                onClick={() => setShowModal(false)}
+              >
+                Upload
+              </button>
             </div>
           </div>
         </div>
