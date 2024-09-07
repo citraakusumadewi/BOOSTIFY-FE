@@ -24,7 +24,7 @@ const Navbar = () => {
       <div className="flex-1 pl-2">
         <Link href="/" passHref>
           <Image
-            src="/logo.png"
+            src="/Boostifylogo.png"
             alt="Boostify Logo"
             className="h-[50px]" // Adjusted for larger logo
             width={125}

@@ -24,7 +24,7 @@ const OurTeam: React.FC = () => {
           RESEARCH DIVISION 22
         </h1>
 
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-center justify-center flex-wrap">
+        <div className="flex flex-col gap-8 lg:gap-16 items-center justify-center">
           <div className={`${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'} p-6 md:p-8 rounded-lg shadow-lg w-full max-w-md lg:max-w-lg xl:max-w-2xl`}>
             <h2 className={`text-xl sm:text-2xl mb-4 md:mb-6 font-bold text-left ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
               Backend
