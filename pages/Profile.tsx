@@ -9,17 +9,6 @@ type AttendanceItem = {
   rawTime: string;
 };
 
-const formatTime = (dateString: string) => {
-  const date = new Date(dateString);
-  console.log('Original:', dateString, 'Converted:', date);
-  return date.toLocaleTimeString('id-ID', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    timeZone: 'Asia/Jakarta',
-  });
-};
-
 const Profile: React.FC = () => {
   const [profileData, setProfileData] = useState<{ id: number; name: string; assisstant_code: string; image_url: string } | null>(null);
   const [attendanceData, setAttendanceData] = useState<AttendanceItem[]>([]);
@@ -216,12 +205,16 @@ const Profile: React.FC = () => {
             Attendance History
           </h2>
           {attendanceData.length > 0 ? (
-            attendanceData.map((item: AttendanceItem, index: number) => (
-              <div key={index} className={`flex justify-between py-2 border-b text-base sm:text-lg font-bold ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#3F3C38]'}`}>
-                <span className="flex-1">{item.time}</span>
-                <span className="flex-1 text-right">{formatTime(item.rawTime)}</span>
-              </div>
-            ))
+            attendanceData.map((item: AttendanceItem, index: number) => {
+              // Mengambil jam saja dari rawTime, misalnya "14:30:45"
+              const timeOnly = item.rawTime.split('T')[1]?.substring(0, 8);
+              return (
+                <div key={index} className={`flex justify-between py-2 border-b text-base sm:text-lg font-bold ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#3F3C38]'}`}>
+                  <span className="flex-1">{item.time}</span>
+                  <span className="flex-1 text-right">{timeOnly}</span>
+                </div>
+              );
+            })
           ) : (
             <p className={`text-base sm:text-lg ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#515151]'}`}>
               No attendance records found.

@@ -4,9 +4,6 @@ import Footer from '../components/Footer';
 import DatePicker from 'react-datepicker';
 import { useTheme } from '../styles/ThemeContext';
 import 'react-datepicker/dist/react-datepicker.css';
-import { toZonedTime, format } from 'date-fns-tz';  // Import format from date-fns-tz
-
-const TIMEZONE = 'Asia/Jakarta'; // Define timeZone
 
 interface AttendanceItem {
   id: number;
@@ -68,16 +65,32 @@ const LiveReport: React.FC = () => {
     fetchAttendanceData();
   }, [currentPage]);
 
+  // Format tanggal ke "Hari, Tanggal, Tahun" dalam UTC
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const zonedDate = toZonedTime(date, TIMEZONE);
-    return format(zonedDate, 'EEEE, MMMM d, yyyy', { timeZone: TIMEZONE });
-  };
+    const date = new Date(dateString); // Date tetap di UTC
+  
+    // Mendapatkan nama hari
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayName = daysOfWeek[date.getUTCDay()];
+  
+    // Mendapatkan nama bulan
+    const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const monthName = monthsOfYear[date.getUTCMonth()]; // Mendapatkan nama bulan berdasarkan indeks bulan
+  
+    // Mendapatkan tanggal dan tahun
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const year = date.getUTCFullYear();
+  
+    return `${dayName}, ${day} ${monthName} ${year}`;
+  };  
 
+  // Format waktu ke "Jam:Menit:Detik" dalam UTC
   const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    const zonedDate = toZonedTime(date, TIMEZONE);
-    return format(zonedDate, 'HH:mm:ss', { timeZone: TIMEZONE });
+    const date = new Date(dateString); // Date tetap di UTC
+    const hours = String(date.getUTCHours()).padStart(2, '0');
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
   };
 
   const handleNextPage = () => {
@@ -144,14 +157,13 @@ const LiveReport: React.FC = () => {
         </div>
       </div>
       <div className="p-5 flex flex-col items-center gap-5 mb-8">
-        {filteredData.length > 0 ? (
+      {filteredData.length > 0 ? (
           filteredData.map((item: AttendanceItem, index: number) => (
             <div 
               key={index} 
-              className={`flex p-5 rounded-lg w-full  max-w-2xl sm:max-w-sm lg:max-w-2xl md:max-w-[100px] flex justify-between items-center shadow-md 
+              className={`flex p-5 rounded-lg w-full max-w-2xl sm:max-w-sm lg:max-w-2xl md:max-w-[100px] flex justify-between items-center shadow-md 
               ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-black'} 
               px-12 mx-4 sm:mx-4`}>
-
               <div className="flex-1 mr-5 text-left">
                 <div className="text-2xl font-bold mb-1">{item.assisstant_code}</div>
                 <div className={`text-lg ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-800'}`}>{item.name}</div>

@@ -15,11 +15,29 @@ const Footer = () => {
         <Link href="/Team" className={`text-${isDarkMode ? '[#D7B66A]' : '[#EAD196]'}`}>
           Team
         </Link>
-        <Link href="mailto:info@boostify.com" className="inline-block">
-          <Image src="/email-icon.png" alt="Email Icon" width={24} height={24} />
+        <Link 
+          href="https://lin.ee/W8n7V4r" 
+          target="_blank" 
+          rel="noopener noreferrer"
+        >
+          <Image 
+            src={isDarkMode ? "/line-dm.png" : "/line-lm.png"} 
+            alt="Line Icon" 
+            width={27} 
+            height={27} 
+          />
         </Link>
-        <Link href="https://www.linkedin.com/company/boostify" className="inline-block">
-          <Image src="/linkedin-icon.png" alt="LinkedIn Icon" width={24} height={24} />
+        <Link 
+          href="https://www.instagram.com/cpslaboratory?igsh=MXB0bzFjc3pwZzBpNQ%3D%3D&utm_source=qr" 
+          target="_blank" 
+          rel="noopener noreferrer"
+        >
+          <Image 
+            src={isDarkMode ? "/ig-dm.png" : "/ig-lm.png"} 
+            alt="Instagram Icon" 
+            width={25} 
+            height={25} 
+          />
         </Link>
       </div>
       <div className="mt-1">
