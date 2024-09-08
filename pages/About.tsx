@@ -4,7 +4,6 @@ import Image from 'next/image'; // Import Next.js Image component
 import Navbar from '../components/Navbar';
 import HomeNav from '../components/HomeNav';
 import Footer from '../components/Footer';
-import FeatureCard from '@/components/FeatureCard';
 import { FaSmile, FaShieldAlt, FaChartLine, FaThumbsUp } from 'react-icons/fa';
 import { useTheme } from '../styles/ThemeContext';
 

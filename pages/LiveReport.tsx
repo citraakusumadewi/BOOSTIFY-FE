@@ -4,12 +4,12 @@ import Footer from '../components/Footer';
 import DatePicker from 'react-datepicker';
 import { useTheme } from '../styles/ThemeContext';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import { format } from 'date-fns';
 interface AttendanceItem {
   id: number;
   assisstant_code: string;
   name: string;
-  time: string;
+  time: string; // Assume time is in ISO 8601 format (UTC)
 }
 
 interface ApiResponse {
@@ -37,7 +37,8 @@ const LiveReport: React.FC = () => {
           const authData = JSON.parse(authDataString);
           const token = authData.token.token;
 
-          const response = await fetch(`https://boostify-back-end.vercel.app/api/attendances?page=${currentPage}`, {
+          const dateQuery = selectedDate ? `&date=${selectedDate.toISOString().split('T')[0]}` : '';
+          const response = await fetch(`https://boostify-back-end.vercel.app/api/attendances?page=${currentPage}${dateQuery}`, {
             method: 'GET',
             headers: {
               Authorization: `Bearer ${token}`,
@@ -63,30 +64,23 @@ const LiveReport: React.FC = () => {
     };
 
     fetchAttendanceData();
-  }, [currentPage]);
+  }, [currentPage, selectedDate]);
 
   // Format tanggal ke "Hari, Tanggal, Tahun" dalam UTC
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString); // Date tetap di UTC
-  
-    // Mendapatkan nama hari
+    const date = new Date(dateString);
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const dayName = daysOfWeek[date.getUTCDay()];
-  
-    // Mendapatkan nama bulan
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    const monthName = monthsOfYear[date.getUTCMonth()]; // Mendapatkan nama bulan berdasarkan indeks bulan
-  
-    // Mendapatkan tanggal dan tahun
+    const monthName = monthsOfYear[date.getUTCMonth()];
     const day = String(date.getUTCDate()).padStart(2, '0');
     const year = date.getUTCFullYear();
-  
     return `${dayName}, ${day} ${monthName} ${year}`;
-  };  
+  };
 
   // Format waktu ke "Jam:Menit:Detik" dalam UTC
   const formatTime = (dateString: string) => {
-    const date = new Date(dateString); // Date tetap di UTC
+    const date = new Date(dateString);
     const hours = String(date.getUTCHours()).padStart(2, '0');
     const minutes = String(date.getUTCMinutes()).padStart(2, '0');
     const seconds = String(date.getUTCSeconds()).padStart(2, '0');
@@ -105,19 +99,31 @@ const LiveReport: React.FC = () => {
     }
   };
 
+ 
+
+
   const filterByDate = () => {
     if (selectedDate) {
+      const selectedDateStr = format(selectedDate, 'yyyy-MM-dd');
+      console.log('Selected date (formatted):', selectedDateStr);
+  
       const filtered = attendanceData.filter(item => {
-        const itemDate = new Date(item.time).setHours(0, 0, 0, 0);
-        const selected = selectedDate.setHours(0, 0, 0, 0);
-        return itemDate === selected;
+        const itemDateStr = new Date(item.time).toISOString().split('T')[0];
+        console.log('Item date (formatted):', itemDateStr);
+        return itemDateStr === selectedDateStr;
       });
+      console.log('Filtered data:', filtered);
       setFilteredData(filtered);
     } else {
       setFilteredData(attendanceData);
     }
   };
+  
 
+  
+  
+  
+  
   if (loading) {
     return (
       <div className={`loaderContainer flex justify-center items-center h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-gray-900'}`}>
@@ -128,7 +134,6 @@ const LiveReport: React.FC = () => {
       </div>
     );
   }
-
   return (
     <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-[#0D0D0D] text-[#BDBDBD]' : 'bg-white text-[#515151]'}`}>
       <HomeNav />
@@ -140,14 +145,15 @@ const LiveReport: React.FC = () => {
           Select Date:
         </label>
         <div className="flex items-center gap-4">
-          <DatePicker
-            id="date-picker"
-            selected={selectedDate}
-            onChange={date => setSelectedDate(date)}
-            className={`p-2 text-base sm:text-lg border rounded-lg flex-shrink-0 ${isDarkMode ? 'border-gray-600 bg-gray-800 text-gray-300' : 'border-gray-300 bg-white text-black'}`}
-            dateFormat="dd/MM/yyyy"
-            placeholderText="Click to select a date"
-          />
+        <DatePicker
+  id="date-picker"
+  selected={selectedDate}
+  onChange={date => setSelectedDate(date)}
+  className={`p-2 text-base sm:text-lg border rounded-lg flex-shrink-0 ${isDarkMode ? 'border-gray-600 bg-gray-800 text-gray-300' : 'border-gray-300 bg-white text-black'}`}
+  dateFormat="yyyy-MM-dd" // Ensure this format is consistent with backend
+  placeholderText="Click to select a date"
+/>
+
           <button
             onClick={filterByDate}
             className={`p-2 rounded-lg text-base sm:text-lg font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`}
