@@ -89,9 +89,9 @@ const HomeNav: React.FC = () => {
           <Image
             src="/Boostifylogo.png"
             alt="Boostify Logo"
-            className="h-40 w-40"
-            width={50}
-            height={50}
+            className="h-20 w-auto sm:h-24 md:h-28 lg:h-32" // Ukuran h ditingkatkan
+            width={180}
+            height={180}
           />
         </Link>
         <nav className="flex items-center gap-5">

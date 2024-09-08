@@ -19,7 +19,7 @@ const OurTeam: React.FC = () => {
     <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-gray-300' : 'bg-white text-gray-900'}`}>
       {status === 'authenticated' ? <HomeNav /> : <Navbar />}
 
-      <main className={`p-4 md:p-8 lg:p-12 text-center ${isDarkMode ? 'bg-[#0D0D0D]' : 'bg-white'}`}>
+      <main className={`flex-grow p-4 md:p-8 lg:p-12 text-center ${isDarkMode ? 'bg-[#0D0D0D]' : 'bg-white'}`}>
         <h1 className={`text-3xl sm:text-4xl md:text-5xl font-bold mt-1 mb-8 md:mb-16 ${isDarkMode ? 'text-gray-300' : 'text-gray-900'}`}>
           RESEARCH DIVISION 22
         </h1>

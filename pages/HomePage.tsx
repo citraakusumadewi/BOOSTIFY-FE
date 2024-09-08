@@ -12,7 +12,7 @@ const HomePage: React.FC = () => {
     <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-gray-200' : 'bg-none text-gray-900'}`}>
       <HomeNav />
 
-      <main className="flex flex-col lg:flex-row items-center lg:justify-between mt-8 sm:mt-10 md:mt-12 lg:mt-16 mx-4 sm:mx-5 md:mx-8 lg:mx-10 xl:mx-16">
+      <main className="flex flex-col lg:flex-row items-center lg:justify-between mt-8 sm:mt-10 md:mt-12 lg:mt-16 mx-4 sm:mx-5 md:mx-8 lg:mx-10 xl:mx-16 flex-grow">
         {/* Left Section */}
         <div className="lg:w-1/2 text-left mb-8 sm:mb-10 md:mb-12 lg:mb-0">
           <h1 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-5 lg:pl-0 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>

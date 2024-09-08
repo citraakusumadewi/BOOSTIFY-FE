@@ -119,11 +119,6 @@ const LiveReport: React.FC = () => {
     }
   };
   
-
-  
-  
-  
-  
   if (loading) {
     return (
       <div className={`loaderContainer flex justify-center items-center h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-gray-900'}`}>
@@ -134,80 +129,82 @@ const LiveReport: React.FC = () => {
       </div>
     );
   }
+  
   return (
     <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-[#0D0D0D] text-[#BDBDBD]' : 'bg-white text-[#515151]'}`}>
       <HomeNav />
-      <h1 className={`text-4xl sm:text-5xl font-bold text-center my-12 sm:my-24 ${isDarkMode ? 'text-[#BDBDBD]' : 'text-gray-600'}`}>
-        ATTENDANCE
-      </h1>
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 text-center sm:text-left">
-        <label htmlFor="date-picker" className={`text-lg sm:text-xl ${isDarkMode ? 'text-[#BDBDBD]' : 'text-gray-700'}`}>
-          Select Date:
-        </label>
-        <div className="flex items-center gap-4">
-        <DatePicker
-  id="date-picker"
-  selected={selectedDate}
-  onChange={date => setSelectedDate(date)}
-  className={`p-2 text-base sm:text-lg border rounded-lg flex-shrink-0 ${isDarkMode ? 'border-gray-600 bg-gray-800 text-gray-300' : 'border-gray-300 bg-white text-black'}`}
-  dateFormat="yyyy-MM-dd" // Ensure this format is consistent with backend
-  placeholderText="Click to select a date"
-/>
-
-          <button
-            onClick={filterByDate}
-            className={`p-2 rounded-lg text-base sm:text-lg font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`}
-          >
-            Apply
+      <div className="flex-grow"> {/* Membungkus seluruh konten utama */}
+        <h1 className={`text-4xl sm:text-5xl font-bold text-center my-12 sm:my-24 ${isDarkMode ? 'text-[#BDBDBD]' : 'text-gray-600'}`}>
+          ATTENDANCE
+        </h1>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 text-center sm:text-left">
+          <label htmlFor="date-picker" className={`text-lg sm:text-xl ${isDarkMode ? 'text-[#BDBDBD]' : 'text-gray-700'}`}>
+            Select Date:
+          </label>
+          <div className="flex items-center gap-4">
+            <DatePicker
+              id="date-picker"
+              selected={selectedDate}
+              onChange={date => setSelectedDate(date)}
+              className={`p-2 text-base sm:text-lg border rounded-lg flex-shrink-0 ${isDarkMode ? 'border-gray-600 bg-gray-800 text-gray-300' : 'border-gray-300 bg-white text-black'}`}
+              dateFormat="yyyy-MM-dd"
+              placeholderText="Click to select a date"
+            />
+            <button
+              onClick={filterByDate}
+              className={`p-2 rounded-lg text-base sm:text-lg font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`}
+            >
+              Apply
+            </button>
+          </div>
+        </div>
+        <div className="p-5 flex flex-col items-center gap-5 mb-8">
+          {filteredData.length > 0 ? (
+            filteredData.map((item: AttendanceItem, index: number) => (
+              <div 
+                key={index} 
+                className={`flex p-5 rounded-lg w-full max-w-2xl sm:max-w-sm lg:max-w-2xl md:max-w-[100px] flex justify-between items-center shadow-md 
+                ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-black'} 
+                px-12 mx-4 sm:mx-4`}>
+                <div className="flex-1 mr-5 text-left">
+                  <div className="text-2xl font-bold mb-1">{item.assisstant_code}</div>
+                  <div className={`text-lg ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-800'}`}>{item.name}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-lg font-bold">{formatDate(item.time)}</div>
+                  <div className="text-md font-bold">{formatTime(item.time)}</div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className={`text-lg ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>No data found</div>
+          )}
+        </div>
+        <div className="flex justify-center items-center my-5">
+          {currentPage > 1 && (
+            <button
+              onClick={handlePreviousPage}
+              className={`p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`}
+            >
+              ◀
+            </button>
+          )}
+          <button className={`p-3 rounded-full mx-2 text-lg sm:text-xl font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`} disabled>
+            PAGE {currentPage}
           </button>
+          {currentPage < totalPages && (
+            <button
+              onClick={handleNextPage}
+              className={`p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`}
+            >
+              ▶
+            </button>
+          )}
         </div>
       </div>
-      <div className="p-5 flex flex-col items-center gap-5 mb-8">
-      {filteredData.length > 0 ? (
-          filteredData.map((item: AttendanceItem, index: number) => (
-            <div 
-              key={index} 
-              className={`flex p-5 rounded-lg w-full max-w-2xl sm:max-w-sm lg:max-w-2xl md:max-w-[100px] flex justify-between items-center shadow-md 
-              ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-black'} 
-              px-12 mx-4 sm:mx-4`}>
-              <div className="flex-1 mr-5 text-left">
-                <div className="text-2xl font-bold mb-1">{item.assisstant_code}</div>
-                <div className={`text-lg ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-800'}`}>{item.name}</div>
-              </div>
-              <div className="text-right">
-                <div className="text-lg font-bold">{formatDate(item.time)}</div>
-                <div className="text-md font-bold">{formatTime(item.time)}</div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className={`text-lg ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>No data found</div>
-        )}
-      </div>
-      <div className="flex justify-center items-center my-5">
-        {currentPage > 1 && (
-          <button
-            onClick={handlePreviousPage}
-            className={`p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`}
-          >
-            ◀
-          </button>
-        )}
-        <button className={`p-3 rounded-full mx-2 text-lg sm:text-xl font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`} disabled>
-          PAGE {currentPage}
-        </button>
-        {currentPage < totalPages && (
-          <button
-            onClick={handleNextPage}
-            className={`p-2 rounded-full mx-2 text-lg sm:text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] text-[#EAD196] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`}
-          >
-            ▶
-          </button>
-        )}
-      </div>
-      <Footer />
+      <Footer/>
     </div>
-  );
+  );  
 };
 
 export default LiveReport;

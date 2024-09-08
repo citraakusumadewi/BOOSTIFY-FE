@@ -22,15 +22,15 @@ const Navbar = () => {
   return (
     <header className={`flex justify-between items-center p-4 mt-4 h-20 ${isDarkMode ? 'bg-[#0D0D0D] text-[#D7B66A]' : 'bg-white text-black'}`}>
       <div className="flex-1 pl-2">
-        <Link href="/" passHref>
-          <Image
-              src="/Boostifylogo.png"
-              alt="Boostify Logo"
-              className="h-20 w-auto sm:h-16 md:h-20 lg:h-24"
-              width={100} // Adjust this value if needed
-              height={100} // Adjust this value if needed
-          />
-        </Link>
+      <Link href="/" passHref>
+        <Image
+          src="/Boostifylogo.png"
+          alt="Boostify Logo"
+          className="h-20 w-auto sm:h-24 md:h-28 lg:h-32" // Ukuran h ditingkatkan
+          width={180}
+          height={180}
+        />
+      </Link>
       </div>
       <nav className="flex items-center gap-4">
         <button onClick={toggleMode} className="cursor-pointer">
