@@ -45,7 +45,7 @@ const LandingPage: React.FC = () => {
       {session ? <HomeNav /> : <Navbar />}
 
       {/* Main Content */}
-      <main className="flex flex-col lg:flex-row items-center lg:justify-between mt-8 sm:mt-10 md:mt-12 lg:mt-16 mx-4 sm:mx-5 md:mx-8 lg:mx-10 xl:mx-16">
+      <main className="flex-grow flex flex-col lg:flex-row items-center lg:justify-between mt-8 sm:mt-10 md:mt-12 lg:mt-16 mx-4 sm:mx-5 md:mx-8 lg:mx-10 xl:mx-16">
         {/* Text Section */}
         <div className="lg:w-1/2 text-left mb-8 sm:mb-10 md:mb-12 lg:mb-0">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 lg:pl-0">
