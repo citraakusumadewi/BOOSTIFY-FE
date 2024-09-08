@@ -24,11 +24,11 @@ const Navbar = () => {
       <div className="flex-1 pl-2">
         <Link href="/" passHref>
           <Image
-            src="/Boostifylogo.png"
-            alt="Boostify Logo"
-            className="h-[50px]" // Adjusted for larger logo
-            width={125}
-            height={50}
+              src="/Boostifylogo.png"
+              alt="Boostify Logo"
+              className="h-20 w-auto sm:h-16 md:h-20 lg:h-24"
+              width={100} // Adjust this value if needed
+              height={100} // Adjust this value if needed
           />
         </Link>
       </div>

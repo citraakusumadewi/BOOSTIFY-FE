@@ -141,7 +141,7 @@ const SignIn: React.FC = () => {
         {/* Left Section - Logo and Tagline for larger screens */}
         <div className="w-1/2 flex items-center justify-center">
           <Image 
-            src="/logoTagline.png" 
+            src={isDarkMode ? '/logoTagline-dark.png' : '/logoTagline.png'} 
             alt="Boostify Logo" 
             width={800} 
             height={800} 

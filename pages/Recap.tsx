@@ -19,10 +19,11 @@ const Recap: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1); // Default to page 1
   const [totalPages, setTotalPages] = useState<number>(8);
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [searchValue, setSearchValue] = useState<string>(''); // Search input state
+  const [filteredData, setFilteredData] = useState<AttendanceItem[]>([]); // State for filtered data
+  const [isSearchApplied, setIsSearchApplied] = useState<boolean>(false); // Check if search is applied
   const { isDarkMode } = useTheme();
-
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleFilter = () => {
     setFilterOpen(!filterOpen);
@@ -100,6 +101,18 @@ const Recap: React.FC = () => {
     }
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value.toUpperCase()); // Convert input to uppercase
+  };  
+
+  const handleApplySearch = () => {
+    const filtered = attendanceData.filter((item) =>
+      item.assisstant_code.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilteredData(filtered); // Set filtered data based on search
+    setIsSearchApplied(true); // Mark that search has been applied
+  };
+
   if (loading) {
     return (
       <div className={`loaderContainer flex justify-center items-center h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-gray-900'}`}>
@@ -115,16 +128,7 @@ const Recap: React.FC = () => {
     return <div>Error: {error}</div>;
   }
 
-  // Data for first page's rank section
-  const rankedData = attendanceData.slice(0, 3);
-
-  // Data for cards (showing a maximum of 5 cards per page)
-  const cardData = attendanceData.slice(3);
-
-  const handleDateChange = (date: Date | null) => {
-    setStartDate(date);
-    toggleFilter(); // Close dropdown after selecting date
-  };
+  const dataToDisplay = isSearchApplied ? filteredData : attendanceData;
 
   return (
     <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-gray-900'}`}>
@@ -134,11 +138,11 @@ const Recap: React.FC = () => {
           ATTENDANCE RECAP
         </h2>
 
-        {currentPage === 1 ? (
-          // First page layout
+        {/* First page layout */}
+        {currentPage === 1 && (
           <div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-            {rankedData.map((attendee, index) => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+            {attendanceData.slice(0, 3).map((attendee, index) => {
               const rankClasses = index === 0 
                 ? 'col-span-2 flex justify-center' // Full width in mobile
                 : 'flex justify-center'; // Default for others
@@ -162,63 +166,48 @@ const Recap: React.FC = () => {
                     <div className={`w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}>
                       <span>{attendee.assisstant_code}</span>
                     </div>
-                    <p className={`text-3xl font-bold text-[#3F3C38] mt-2  ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#3F3C38]'}`}>{attendee.totalAttendance}</p>
+                    <p className={`text-3xl font-bold mt-2 ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#3F3C38]'}`}>
+                      {attendee.totalAttendance}
+                    </p>
                   </div>
                 </div>
               );
             })}
-          </div>
-
-          <div className="flex justify-end mt-7 mb-6">
-            <button onClick={toggleFilter} className={`text-base flex items-center ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#3F3C38]'}`}>
-              Filter
-            </button>
-              {filterOpen && (
-                <div ref={dropdownRef} className={`absolute right-0 shadow-lg rounded-lg p-4 mt-2 ${isDarkMode ? 'bg-[#D7B66A]' : 'bg-[#EAD196]'}`}>
-                  <p className={`font-bold mb-2 ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-900'}`}>Sort By:</p>
-                  <ul>
-                    <li className={`text-sm cursor-pointer py-1 hover:underline ${isDarkMode ? 'text-[#3F3C38]' : 'text-[#3F3C38]'}`}>
-                      <DatePicker selected={startDate} onChange={handleDateChange} placeholderText="Select Date" />
-                    </li>
-                    <li onClick={toggleFilter} className={`text-sm cursor-pointer py-1 hover:underline ${isDarkMode ? 'text-[#3F3C38]' : 'text-[#3F3C38]'}`}>
-                      Assistant Code
-                    </li>
-                  </ul>
-                </div>
-              )}
             </div>
-
-            {/* Cards */}
-            <div className="max-w-3xl mx-auto mt-10 mb-10">
-              {attendanceData.map((attendee, index) => (
-                <div key={index} className={`flex justify-between items-center p-5 my-4 rounded-lg shadow-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-[#3F3C38]'}`}>
-                  <div className="text-left">
-                    <h3 className={`text-2xl font-bold ${isDarkMode ? 'text-[#3F3C38]' : 'text-[#4A4A4A]'}`}>{attendee.assisstant_code}</h3>
-                    <p className={`text-lg ${isDarkMode ? 'text-[#3F3C38]' : 'text-[#4A4A4A]'}`}>{attendee.name}</p>
-                  </div>
-                  <div className={`rounded-lg p-4 flex items-center justify-center shadow-lg w-[75px] h-[60px] text-2xl text-center font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A]' : 'bg-[#7D0A0A] text-[#EAD196]'}`}>
-                    {attendee.totalAttendance}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          // Layout for other pages
-          <div className="mx-auto max-w-md sm:max-w-xl lg:max-w-2xl">
-            {attendanceData.map((attendee, index) => (
-              <div key={index} className={`flex justify-between p-5 mb-5 rounded-lg shadow-md ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-[#3F3C38]'}`}>
-                <div className="text-left">
-                  <h3 className={`text-xl font-bold ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-800'}`}>{attendee.assisstant_code}</h3>
-                  <p className={`text-lg ${isDarkMode ? 'text-[#3F3C38]' : 'text-gray-600'}`}>{attendee.name}</p>
-                </div>
-                <div className={`rounded-lg p-4 flex items-center justify-center shadow-lg w-[75px] h-[60px] text-2xl text-center font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A]' : 'bg-[#7D0A0A] text-[#EAD196]'}`}>
-                  {attendee.totalAttendance}
-                </div>
-              </div>
-            ))}
           </div>
         )}
+
+        {/* Search bar and Apply button */}
+        <div className="flex justify-center items-center mb-10">
+          <input
+            type="text"
+            value={searchValue}
+            onChange={handleSearchChange} // Convert input to uppercase here
+            placeholder="Search Assistant Code"
+            className={`p-2 rounded-lg border-2 ${isDarkMode ? 'bg-[#2C2C2C] text-white' : 'bg-white text-gray-900'}`}
+          />
+          <button
+            onClick={handleApplySearch}
+            className={`ml-4 px-6 py-2 font-bold rounded-lg ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A]' : 'bg-[#7D0A0A] text-[#EAD196]'} hover:bg-red-700`}
+          >
+            Apply
+          </button>
+        </div>
+
+        {/* Cards */}
+        <div className="max-w-3xl mx-auto mt-10 mb-10">
+          {dataToDisplay.map((attendee, index) => (
+            <div key={index} className={`flex justify-between items-center p-5 my-4 rounded-lg shadow-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-[#3F3C38]'}`}>
+              <div className="text-left">
+                <h3 className={`text-2xl font-bold ${isDarkMode ? 'text-[#3F3C38]' : 'text-[#4A4A4A]'}`}>{attendee.assisstant_code}</h3>
+                <p className={`text-lg ${isDarkMode ? 'text-[#3F3C38]' : 'text-[#4A4A4A]'}`}>{attendee.name}</p>
+              </div>
+              <div className={`rounded-lg p-4 flex items-center justify-center shadow-lg w-[75px] h-[60px] text-2xl text-center font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A]' : 'bg-[#7D0A0A] text-[#EAD196]'}`}>
+                {attendee.totalAttendance}
+              </div>
+            </div>
+          ))}
+        </div>
 
         <div className="flex justify-center items-center my-5">
           {currentPage > 1 && (
