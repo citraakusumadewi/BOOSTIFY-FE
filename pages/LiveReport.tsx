@@ -163,7 +163,7 @@ const LiveReport: React.FC = () => {
             filteredData.map((item: AttendanceItem, index: number) => (
               <div 
                 key={index} 
-                className={`flex p-5 rounded-lg w-full max-w-2xl sm:max-w-sm lg:max-w-2xl md:max-w-[100px] flex justify-between items-center shadow-md 
+                className={`flex p-5 rounded-lg w-full sm:w-3/4 md:w-2/3 lg:w-full xl:w-full max-w-2xl shadow-md 
                 ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-black'} 
                 px-12 mx-4 sm:mx-4`}>
                 <div className="flex-1 mr-5 text-left">
