@@ -142,37 +142,40 @@ const Recap: React.FC = () => {
         {currentPage === 1 && (
           <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-            {attendanceData.slice(0, 3).map((attendee, index) => {
-              const rankClasses = index === 0 
-                ? 'col-span-2 flex justify-center' // Full width in mobile
-                : 'flex justify-center'; // Default for others
+            {attendanceData
+              .sort((a, b) => b.totalAttendance - a.totalAttendance) // Sort data by totalAttendance in descending order
+              .slice(0, 3)
+              .map((attendee, index) => {
+                const rankClasses = index === 0 
+                  ? 'col-span-2 flex justify-center' // Full width in mobile
+                  : 'flex justify-center'; // Default for others
 
-              const medalIcon = index === 0 
-                ? '/gold-medal.png'
-                : index === 1
-                ? '/silver-medal.png'
-                : '/bronze-medal.png';
+                const medalIcon = index === 0 
+                  ? '/gold-medal.png'
+                  : index === 1
+                  ? '/silver-medal.png'
+                  : '/bronze-medal.png';
 
-              return (
-                <div key={index} className={`${rankClasses} text-center`}>
-                  <div className="relative">
-                    <Image 
-                      src={medalIcon} 
-                      alt="medal" 
-                      className="absolute top-[-10px] left-[-15px] w-20 h-20 object-contain z-20" 
-                      width={80}
-                      height={80}
-                    />
-                    <div className={`w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}>
-                      <span>{attendee.assisstant_code}</span>
+                return (
+                  <div key={index} className={`${rankClasses} text-center`}>
+                    <div className="relative">
+                      <Image 
+                        src={medalIcon} 
+                        alt="medal" 
+                        className="absolute top-[-10px] left-[-15px] w-20 h-20 object-contain z-20" 
+                        width={80}
+                        height={80}
+                      />
+                      <div className={`w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}>
+                        <span>{attendee.assisstant_code}</span>
+                      </div>
+                      <p className={`text-3xl font-bold mt-2 mb-6 ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#3F3C38]'}`}>
+                        {attendee.totalAttendance}
+                      </p>
                     </div>
-                    <p className={`text-3xl font-bold mt-2 ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#3F3C38]'}`}>
-                      {attendee.totalAttendance}
-                    </p>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
             </div>
           </div>
         )}
