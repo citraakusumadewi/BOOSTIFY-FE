@@ -20,7 +20,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className={`flex justify-between items-center p-4 mt-4 h-20 ${isDarkMode ? 'bg-[#0D0D0D] text-[#D7B66A]' : 'bg-white text-black'}`}>
+    <header className={`flex justify-between items-center p-4 h-20 ${isDarkMode ? 'bg-[#0D0D0D] text-[#D7B66A]' : 'bg-white text-black'}`}>
       <div className="flex-1 pl-2">
       <Link href="/" passHref>
         <Image

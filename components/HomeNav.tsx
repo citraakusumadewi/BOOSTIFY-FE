@@ -84,7 +84,7 @@ const HomeNav: React.FC = () => {
 
   return (
     <div className={`w-full min-h-100 ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
-      <header className={`flex justify-between items-center px-4 py-4 mt-4 h-20 ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
+      <header className={`flex justify-between items-center px-4 py-4 h-20 ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
         <Link href="/HomePage" passHref>
           <Image
             src="/Boostifylogo.png"
