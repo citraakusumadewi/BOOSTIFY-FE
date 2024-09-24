@@ -98,8 +98,16 @@ const Recap: React.FC = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loaderContainer flex justify-center items-center h-screen">
+        <div className="loader relative w-12 aspect-[1/1] rounded-full border-[8px] border-transparent border-r-[#ffa50097] animate-spin">
+          <div className="absolute inset-[-8px] rounded-full border-[inherit] animate-[spin_2s_linear_infinite]"></div>
+          <div className="absolute inset-[-8px] rounded-full border-[inherit] animate-[spin_4s_linear_infinite]"></div>
+        </div>
+      </div>
+    );
   }
+  
 
   if (error) {
     return <div>Error: {error}</div>;
