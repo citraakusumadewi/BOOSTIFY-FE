@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -11,18 +11,23 @@ const HomeNav: React.FC = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [assistantCode, setAssistantCode] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const formRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { isDarkMode, toggleMode } = useTheme();
 
   useEffect(() => {
     const fetchUserData = async () => {
       const authDataString = localStorage.getItem('authData');
-      console.log('Retrieved authData from localStorage:', authDataString);
-
       if (authDataString) {
         const authData = JSON.parse(authDataString);
         const token = authData.token.token;
-        console.log('Extracted token:', token);
 
         if (token) {
           try {
@@ -36,7 +41,6 @@ const HomeNav: React.FC = () => {
 
             if (!response.ok) {
               if (response.status === 401) {
-                console.warn('Token invalid, redirecting to SignIn');
                 localStorage.removeItem('authData');
                 router.push('/SignIn');
               } else {
@@ -46,17 +50,12 @@ const HomeNav: React.FC = () => {
             }
 
             const data = await response.json();
-            console.log('Fetched user data:', data);
             setUserName(data.name);
             setAssistantCode(data.assisstant_code);
           } catch (error) {
             console.error('Failed to fetch user data:', error);
           }
-        } else {
-          console.warn('No token found in authData');
         }
-      } else {
-        console.warn('No authData found');
       }
     };
 
@@ -67,8 +66,6 @@ const HomeNav: React.FC = () => {
     try {
       localStorage.removeItem('authData');
       localStorage.removeItem('nextauth.message');
-      console.log('Sign out successful, session and token removed');
-
       await signOut({ callbackUrl: '/' });
     } catch (error) {
       console.error('Sign out failed:', error);
@@ -77,10 +74,77 @@ const HomeNav: React.FC = () => {
     }
   };
 
+  const handleChangePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    if (newPassword !== confirmPassword) {
+      setErrorMessage('New password and confirmation do not match.');
+      return;
+    }
+
+    try {
+      const authDataString = localStorage.getItem('authData');
+      const authData = authDataString ? JSON.parse(authDataString) : null;
+      const token = authData ? authData.token.token : null;
+
+      const response = await fetch('https://boostify-back-end.vercel.app/api/auth/updatePassword', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setErrorMessage(errorData.message || 'Failed to update password.');
+      } else {
+        alert('Password updated successfully');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setShowChangePassword(false);
+      }
+    } catch (error) {
+      setErrorMessage('Error updating password.');
+      console.error('Error:', error);
+    }
+  };
+
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
-    console.log('Menu Toggled:', isMenuOpen); // Debugging log
   };
+
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+      if (formRef.current && !formRef.current.contains(event.target as Node)) {
+        setShowChangePassword(false);
+      }
+    };
+
+    if (isDropdownOpen || showChangePassword) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDropdownOpen, showChangePassword]);
 
   return (
     <div className={`w-full min-h-100 ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
@@ -145,15 +209,77 @@ const HomeNav: React.FC = () => {
               </button>
             </li>
           </ul>
-          <Link href="/Profile" passHref>
-            <div className="bg-transparent border-none cursor-pointer">
+          <div className="relative" ref={dropdownRef}>
+            <button onClick={handleDropdownToggle} className="bg-transparent border-none cursor-pointer">
               <div className={`flex items-center justify-center rounded-full w-12 h-12 ${isDarkMode ? 'bg-[#D7B66A]' : 'bg-[#EAD196]'}`}>
                 {assistantCode && (
                   <span className={`font-bold text-sm ${isDarkMode ? 'text-[#5B0A0A]' : 'text-[#7D0A0A]'}`}>{assistantCode}</span>
                 )}
               </div>
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 p-4 bg-white border rounded shadow-lg z-10">
+                <ul>
+                  <li>
+                    <Link href="/Profile" passHref>
+                      <button className="block text-sm text-gray-700 py-2">Profile</button>
+                    </Link>
+                  </li>
+                  <li>
+                    <button onClick={() => { setShowChangePassword(true); setIsDropdownOpen(false); }} className="block text-sm text-gray-700 py-2">
+                      Change Password
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+          {showChangePassword && (
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div ref={formRef} className="bg-white p-8 rounded-lg shadow-lg w-96 relative">
+                <form onSubmit={handleChangePasswordSubmit}>
+                  <h2 className="text-xl font-bold mb-4 text-center">Change Password</h2>
+                  <div className="mb-2">
+                    <label className="block text-sm">Current Password</label>
+                    <input
+                      type="password"
+                      className="w-full p-2 border rounded"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm">New Password</label>
+                    <input
+                      type="password"
+                      className="w-full p-2 border rounded"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm">Confirm New Password</label>
+                    <input
+                      type="password"
+                      className="w-full p-2 border rounded"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  {errorMessage && <p className="text-red-500 text-xs">{errorMessage}</p>}
+                  <div className="flex justify-end gap-2">
+                    <button type="button" onClick={() => setShowChangePassword(false)} className="px-4 py-2 bg-gray-300 text-black rounded">
+                      Cancel
+                    </button>
+                    <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Submit</button>
+                  </div>
+                </form>
+              </div>
             </div>
-          </Link>
+          )}
         </nav>
       </header>
 
