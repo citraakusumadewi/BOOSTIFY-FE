@@ -77,19 +77,26 @@ const HomeNav: React.FC = () => {
   const handleChangePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
-
+  
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setErrorMessage('All password fields are required.');
+      return;
+    }
+  
     if (newPassword !== confirmPassword) {
       setErrorMessage('New password and confirmation do not match.');
       return;
     }
-
+  
     try {
       const authDataString = localStorage.getItem('authData');
       const authData = authDataString ? JSON.parse(authDataString) : null;
       const token = authData ? authData.token.token : null;
-
+  
+      console.log('Submitting:', { currentPassword, newPassword, confirmPassword });
+  
       const response = await fetch('https://boostify-back-end.vercel.app/api/auth/updatePassword', {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -97,9 +104,10 @@ const HomeNav: React.FC = () => {
         body: JSON.stringify({
           currentPassword,
           newPassword,
+          confirmPassword
         }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         setErrorMessage(errorData.message || 'Failed to update password.');
@@ -114,7 +122,7 @@ const HomeNav: React.FC = () => {
       setErrorMessage('Error updating password.');
       console.error('Error:', error);
     }
-  };
+  };  
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
