@@ -146,6 +146,7 @@ const SignIn: React.FC = () => {
             width={800} 
             height={800} 
             className="mx-auto"
+            priority
           />
         </div>
 
