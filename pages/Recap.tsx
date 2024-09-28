@@ -67,7 +67,6 @@ const Recap: React.FC = () => {
           }
 
           const data = await response.json();
-          console.log('Fetched data:', data);
 
           setAttendanceData(data.payload);
           setTotalPages(data.pagination.totalPages); // Update total pages from the response
@@ -138,54 +137,12 @@ const Recap: React.FC = () => {
           ATTENDANCE RECAP
         </h2>
 
-        {/* First page layout */}
-        {currentPage === 1 && (
-          <div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-            {attendanceData
-              .sort((a, b) => b.totalAttendance - a.totalAttendance) // Sort data by totalAttendance in descending order
-              .slice(0, 3)
-              .map((attendee, index) => {
-                const rankClasses = index === 0 
-                  ? 'col-span-2 flex justify-center' // Full width in mobile
-                  : 'flex justify-center'; // Default for others
-
-                const medalIcon = index === 0 
-                  ? '/gold-medal.png'
-                  : index === 1
-                  ? '/silver-medal.png'
-                  : '/bronze-medal.png';
-
-                return (
-                  <div key={index} className={`${rankClasses} text-center`}>
-                    <div className="relative">
-                      <Image 
-                        src={medalIcon} 
-                        alt="medal" 
-                        className="absolute top-[-10px] left-[-15px] w-20 h-20 object-contain z-20" 
-                        width={80}
-                        height={80}
-                      />
-                      <div className={`w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}>
-                        <span>{attendee.assisstant_code}</span>
-                      </div>
-                      <p className={`text-3xl font-bold mt-2 mb-6 ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#3F3C38]'}`}>
-                        {attendee.totalAttendance}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Search bar and Apply button */}
+        {/* Search bar dan Apply button */}
         <div className="flex justify-center items-center mb-10">
           <input
             type="text"
             value={searchValue}
-            onChange={handleSearchChange} // Convert input to uppercase here
+            onChange={handleSearchChange}
             placeholder="Search Assistant Code"
             className={`p-2 rounded-lg border-2 ${isDarkMode ? 'bg-[#2C2C2C] text-white' : 'bg-white text-gray-900'}`}
           />
@@ -197,36 +154,112 @@ const Recap: React.FC = () => {
           </button>
         </div>
 
-        {/* Cards */}
-        <div className="max-w-3xl mx-auto mt-10 mb-10">
-          {dataToDisplay.map((attendee, index) => (
-            <div key={index} className={`flex justify-between items-center p-5 my-4 rounded-lg shadow-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-[#3F3C38]'}`}>
-              <div className="text-left">
-                <h3 className={`text-2xl font-bold ${isDarkMode ? 'text-[#3F3C38]' : 'text-[#4A4A4A]'}`}>{attendee.assisstant_code}</h3>
-                <p className={`text-lg ${isDarkMode ? 'text-[#3F3C38]' : 'text-[#4A4A4A]'}`}>{attendee.name}</p>
-              </div>
-              <div className={`rounded-lg p-4 flex items-center justify-center shadow-lg w-[75px] h-[60px] text-2xl text-center font-bold ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A]' : 'bg-[#7D0A0A] text-[#EAD196]'}`}>
-                {attendee.totalAttendance}
-              </div>
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          {/* Komponen Rank */}
+          <div className="2xl:col-span-1 lg:-translate-x-6">
+            <div className="items-center grid grid-cols-1 grid-cols-2 gap-6 gap-8">
+              {attendanceData
+                .sort((a, b) => b.totalAttendance - a.totalAttendance)
+                .slice(0, 3)
+                .map((attendee, index) => {
+                  const rankClasses = index === 0 
+                    ? 'col-span-2 flex justify-center' 
+                    : 'flex justify-center';
+
+                  const medalIcon = index === 0 
+                    ? '/gold-medal.png'
+                    : index === 1
+                    ? '/silver-medal.png'
+                    : '/bronze-medal.png';
+
+                  return (
+                    <div key={index} className={`${rankClasses} text-center`}>
+                      <div className="relative">
+                        <Image 
+                          src={medalIcon} 
+                          alt="medal" 
+                          className="absolute top-[-10px] left-[-15px] w-20 h-20 object-contain z-20" 
+                          width={80}
+                          height={80}
+                        />
+                        <div className={`w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}>
+                          <span>{attendee.assisstant_code}</span>
+                        </div>
+                        <p className={`text-3xl font-bold mt-2 mb-6 ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#3F3C38]'}`}>
+                          {attendee.totalAttendance}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
-          ))}
+          </div>
+
+          {/* Komponen Cards */}
+          <div className="xl:col-span-2">
+            <div className="max-w-3xl mx-auto mt-10 mb-10">
+              {dataToDisplay.length === 0 && isSearchApplied ? (
+                <div className={`text-xl font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-900'}`}>
+                  Data Not Found
+                </div>
+              ) : (
+                dataToDisplay
+                  .slice((currentPage - 1) * 5, currentPage * 5) // Batasi tampilan 5 cards per page
+                  .map((attendee, index) => (
+                    <div
+                      key={index}
+                      className={`flex justify-between items-center p-5 my-4 rounded-lg shadow-lg w-full ${
+                        isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-[#3F3C38]'
+                      }`}
+                    >
+                      <div className="text-left">
+                        <h3
+                          className={`text-2xl font-bold ${
+                            isDarkMode ? 'text-[#3F3C38]' : 'text-[#4A4A4A]'
+                          }`}
+                        >
+                          {attendee.assisstant_code}
+                        </h3>
+                        <p
+                          className={`text-lg ${
+                            isDarkMode ? 'text-[#3F3C38]' : 'text-[#4A4A4A]'
+                          }`}
+                        >
+                          {attendee.name}
+                        </p>
+                      </div>
+                      <div
+                        className={`rounded-lg p-4 flex items-center justify-center shadow-lg w-[75px] h-[60px] text-2xl text-center font-bold ${
+                          isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A]' : 'bg-[#7D0A0A] text-[#EAD196]'
+                        }`}
+                      >
+                        {attendee.totalAttendance}
+                      </div>
+                    </div>
+                  ))
+              )}
+            </div>
+          </div>
         </div>
 
-        <div className="flex justify-center items-center my-5">
-          {currentPage > 1 && (
-            <button onClick={handlePreviousPage} className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}>
-              ◀
+        {/* Pagination */}
+        {dataToDisplay.length > 0 && (
+          <div className="flex justify-center items-center my-5">
+            {currentPage > 1 && (
+              <button onClick={handlePreviousPage} className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}>
+                ◀
+              </button>
+            )}
+            <button className={`text-[#EAD196] p-3 rounded-full mx-2 text-xl font-bold ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`} disabled>
+              PAGE {currentPage}
             </button>
-          )}
-          <button className={`text-[#EAD196] p-3 rounded-full mx-2 text-xl font-bold ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`} disabled>
-            PAGE {currentPage}
-          </button>
-          {currentPage < totalPages && (
-            <button onClick={handleNextPage} className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}>
-              ▶
-            </button>
-          )}
-        </div>
+            {currentPage < totalPages && (
+              <button onClick={handleNextPage} className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}>
+                ▶
+              </button>
+            )}
+          </div>
+        )}
       </main>
       <Footer />
     </div>
