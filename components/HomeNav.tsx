@@ -77,17 +77,26 @@ const HomeNav: React.FC = () => {
   const handleChangePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
-
+  
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setErrorMessage('All password fields are required.');
+      return;
+    }
+  
     if (newPassword !== confirmPassword) {
       setErrorMessage('New password and confirmation do not match.');
       return;
     }
-
+  
     try {
       const authDataString = localStorage.getItem('authData');
       const authData = authDataString ? JSON.parse(authDataString) : null;
       const token = authData ? authData.token.token : null;
-
+  
+      console.log('Submitting:', { currentPassword, newPassword, confirmPassword });
+  
+      const response = await fetch('https://boostify-back-end.vercel.app/api/auth/updatePassword', {
+        method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -95,7 +104,10 @@ const HomeNav: React.FC = () => {
         body: JSON.stringify({
           currentPassword,
           newPassword,
-
+          confirmPassword
+        }),
+      });
+  
       if (!response.ok) {
         const errorData = await response.json();
         setErrorMessage(errorData.message || 'Failed to update password.');
@@ -110,6 +122,7 @@ const HomeNav: React.FC = () => {
       setErrorMessage('Error updating password.');
       console.error('Error:', error);
     }
+  };  
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -148,7 +161,7 @@ const HomeNav: React.FC = () => {
           <Image
             src="/Boostifylogo.png"
             alt="Boostify Logo"
-            className="h-24 w-auto sm:h-24 md:h-28 lg:h-32 xl:h-36 2xl:h-40" // Ukuran h ditingkatkan
+            className="h-24 w-auto sm:h-24 md:h-28 lg:h-32" // Ukuran h ditingkatkan
             width={180}
             height={180}
           />
@@ -213,7 +226,17 @@ const HomeNav: React.FC = () => {
               </div>
             </button>
             {isDropdownOpen && (
-
+              <div className={`absolute right-0 mt-2 p-4 ${isDarkMode ? 'bg-[#5b0a0a]' : 'bg-[#7D0A0A]'} border rounded shadow-lg z-10 w-[150px] `} >
+                <ul className="space-y-2">
+                  <li>
+                    <Link href="/Profile" passHref>
+                    <button className={`block w-full text-sm font-bold text-center ${isDarkMode ? 'text-[#000000]' : 'text-[#3F3C38]'} py-2 border-none rounded ${isDarkMode ?  'bg-[#d7b66a]' : 'bg-[#EAD196]'} bg-opacity-80 `}>
+                      Profile
+                    </button>
+                    </Link>
+                  </li>
+                  <li>
+                    <button onClick={() => { setShowChangePassword(true); setIsDropdownOpen(false); }} className={`block text-sm font-bold  ${isDarkMode ? 'text-[#000000]' : 'text-[#3F3C38]'} py-2 border-none rounded ${isDarkMode ?  'bg-[#d7b66a]' : 'bg-[#EAD196]'} bg-opacity-80 `}>
                       Change Password
                     </button>
                   </li>
@@ -230,7 +253,7 @@ const HomeNav: React.FC = () => {
                     <label className={`block font-bold ${isDarkMode ? 'text-[#5b0a0a]' : 'text-[#7D0A0A]'} text-sm`}>Current Password</label>
                     <input
                       type="password"
-
+                      className={`w-full ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#584B4B]'} bg-opacity-50 p-2 border-none rounded`}
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       required
@@ -240,7 +263,7 @@ const HomeNav: React.FC = () => {
                     <label className={`block font-bold ${isDarkMode ? 'text-[#5b0a0a]' : 'text-[#7D0A0A]'} text-sm`}>New Password</label>
                     <input
                       type="password"
-
+                      className={`w-full ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#584B4B]'} bg-opacity-50 p-2 border-none rounded`}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       required
@@ -250,7 +273,7 @@ const HomeNav: React.FC = () => {
                     <label className={`block font-bold ${isDarkMode ? 'text-[#5b0a0a]' : 'text-[#7D0A0A]'} text-sm`}>Confirm New Password</label>
                     <input
                       type="password"
-
+                      className={`w-full ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#584B4B]'} bg-opacity-50 p-2 border-none rounded`}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
@@ -258,7 +281,7 @@ const HomeNav: React.FC = () => {
                   </div>
                   {errorMessage && <p className="text-red-500 text-xs">{errorMessage}</p>}
                   <div className="flex justify-end gap-2">
-
+                    <button type="button" onClick={() => setShowChangePassword(false)} className={`px-4 py-2 ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#685D5D]'}  ${isDarkMode ? 'text-[#000]' : 'text-[#fff]'} border-none rounded`}>
                       Cancel
                     </button>
                     <button type="submit" className={`px-4 py-2 ${isDarkMode ? 'bg-[#5b0a0a]' : 'bg-[#7D0A0A]'} ${isDarkMode ? 'text-[#d7b66a]' : 'text-[#ead196]'} rounded`}>Submit</button>
