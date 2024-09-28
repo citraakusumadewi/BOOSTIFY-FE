@@ -26,7 +26,7 @@ const Navbar = () => {
         <Image
           src="/Boostifylogo.png"
           alt="Boostify Logo"
-          className="h-20 w-auto sm:h-24 md:h-28 lg:h-32" // Ukuran h ditingkatkan
+          className="h-24 w-auto sm:h-24 md:h-28 lg:h-32 xl:h-36 2xl:h-40" // Ukuran h ditingkatkan
           width={180}
           height={180}
         />

@@ -161,7 +161,7 @@ const HomeNav: React.FC = () => {
           <Image
             src="/Boostifylogo.png"
             alt="Boostify Logo"
-            className="h-20 w-auto sm:h-24 md:h-28 lg:h-32" // Ukuran h ditingkatkan
+            className="h-24 w-auto sm:h-24 md:h-28 lg:h-32 xl:h-36 2xl:h-40" // Ukuran h ditingkatkan
             width={180}
             height={180}
           />
@@ -226,15 +226,17 @@ const HomeNav: React.FC = () => {
               </div>
             </button>
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 p-4 bg-white border rounded shadow-lg z-10">
-                <ul>
+              <div className={`absolute right-0 mt-2 p-4 ${isDarkMode ? 'bg-[#5b0a0a]' : 'bg-[#7D0A0A]'} border rounded shadow-lg z-10 w-[150px] `} >
+                <ul className="space-y-2">
                   <li>
                     <Link href="/Profile" passHref>
-                      <button className="block text-sm text-gray-700 py-2">Profile</button>
+                    <button className={`block w-full text-sm font-bold text-center ${isDarkMode ? 'text-[#000000]' : 'text-[#3F3C38]'} py-2 border-none rounded ${isDarkMode ?  'bg-[#d7b66a]' : 'bg-[#EAD196]'} bg-opacity-80 `}>
+                      Profile
+                    </button>
                     </Link>
                   </li>
                   <li>
-                    <button onClick={() => { setShowChangePassword(true); setIsDropdownOpen(false); }} className="block text-sm text-gray-700 py-2">
+                    <button onClick={() => { setShowChangePassword(true); setIsDropdownOpen(false); }} className={`block text-sm font-bold  ${isDarkMode ? 'text-[#000000]' : 'text-[#3F3C38]'} py-2 border-none rounded ${isDarkMode ?  'bg-[#d7b66a]' : 'bg-[#EAD196]'} bg-opacity-80 `}>
                       Change Password
                     </button>
                   </li>
@@ -244,34 +246,34 @@ const HomeNav: React.FC = () => {
           </div>
           {showChangePassword && (
             <div className="fixed inset-0 flex items-center justify-center z-50">
-              <div ref={formRef} className="bg-white p-8 rounded-lg shadow-lg w-96 relative">
+              <div ref={formRef} className={` ${isDarkMode ? 'bg-[#d7b66a]' : 'bg-[#ead196]'} p-8 rounded-lg shadow-lg w-96 relative`}>
                 <form onSubmit={handleChangePasswordSubmit}>
-                  <h2 className="text-xl font-bold mb-4 text-center">Change Password</h2>
+                  <h2 className={`text-xl  ${isDarkMode ? 'text-[#5b0a0a]' : 'text-[#7D0A0A]'} font-bold mb-4 text-center`}>Change Password</h2>
                   <div className="mb-2">
-                    <label className="block text-sm">Current Password</label>
+                    <label className={`block font-bold ${isDarkMode ? 'text-[#5b0a0a]' : 'text-[#7D0A0A]'} text-sm`}>Current Password</label>
                     <input
                       type="password"
-                      className="w-full p-2 border rounded"
+                      className={`w-full ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#584B4B]'} bg-opacity-50 p-2 border-none rounded`}
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       required
                     />
                   </div>
                   <div className="mb-2">
-                    <label className="block text-sm">New Password</label>
+                    <label className={`block font-bold ${isDarkMode ? 'text-[#5b0a0a]' : 'text-[#7D0A0A]'} text-sm`}>New Password</label>
                     <input
                       type="password"
-                      className="w-full p-2 border rounded"
+                      className={`w-full ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#584B4B]'} bg-opacity-50 p-2 border-none rounded`}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       required
                     />
                   </div>
                   <div className="mb-2">
-                    <label className="block text-sm">Confirm New Password</label>
+                    <label className={`block font-bold ${isDarkMode ? 'text-[#5b0a0a]' : 'text-[#7D0A0A]'} text-sm`}>Confirm New Password</label>
                     <input
                       type="password"
-                      className="w-full p-2 border rounded"
+                      className={`w-full ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#584B4B]'} bg-opacity-50 p-2 border-none rounded`}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
@@ -279,10 +281,10 @@ const HomeNav: React.FC = () => {
                   </div>
                   {errorMessage && <p className="text-red-500 text-xs">{errorMessage}</p>}
                   <div className="flex justify-end gap-2">
-                    <button type="button" onClick={() => setShowChangePassword(false)} className="px-4 py-2 bg-gray-300 text-black rounded">
+                    <button type="button" onClick={() => setShowChangePassword(false)} className={`px-4 py-2 ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#685D5D]'}  ${isDarkMode ? 'text-[#000]' : 'text-[#fff]'} border-none rounded`}>
                       Cancel
                     </button>
-                    <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Submit</button>
+                    <button type="submit" className={`px-4 py-2 ${isDarkMode ? 'bg-[#5b0a0a]' : 'bg-[#7D0A0A]'} ${isDarkMode ? 'text-[#d7b66a]' : 'text-[#ead196]'} rounded`}>Submit</button>
                   </div>
                 </form>
               </div>

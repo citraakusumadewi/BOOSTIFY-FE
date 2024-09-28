@@ -43,7 +43,7 @@ const SignIn: React.FC = () => {
     setLoading(false);
 
     if (result?.error) {
-      setError('Invalid credentials');
+      setError('Wrong password!');
     } else {
       // Get the latest session after sign-in
       const session = await getSession() as CustomSession; // Ensure type casting here
