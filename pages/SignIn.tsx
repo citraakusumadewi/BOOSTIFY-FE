@@ -88,6 +88,7 @@ const SignIn: React.FC = () => {
             className="mx-auto"
           />
         </div>
+
         <div className={`w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
           <h2 className={`text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
             Sign In to Your Account
@@ -217,7 +218,7 @@ const SignIn: React.FC = () => {
             </form>
             <button
               onClick={() => setShowForgotPassword(true)}
-              className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}
+              className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}
             >
               Forgot Password?
             </button>
@@ -225,31 +226,37 @@ const SignIn: React.FC = () => {
         </div>
       </div>
 
+      {/* Forgot Password Modal */}
       {showForgotPassword && (
-        <div className={`fixed inset-0 z-50 flex items-center justify-center ${isDarkMode ? 'bg-[#0D0D0D]' : 'bg-white'} bg-opacity-80`}>
-          <div className={`p-8 rounded-lg relative max-w-md w-full ${isDarkMode ? 'bg-[#5B0A0A] text-white' : 'bg-[#7D0A0A] text-black'}`}>
-            <MdClose 
-              className="absolute top-2 right-2 cursor-pointer"
-              onClick={() => setShowForgotPassword(false)}
-              size={25}
-            />
-            <h2 className={`text-2xl font-bold text-center mb-6 ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
-              Forgot Password?
-            </h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+          <div className="bg-white dark:bg-[#333333] rounded-lg p-8 max-w-lg w-full">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold dark:text-white">Forgot Password</h2>
+              <button
+                className="text-gray-500 hover:text-gray-700 dark:text-white"
+                onClick={() => setShowForgotPassword(false)}
+              >
+                <MdClose size={24} />
+              </button>
+            </div>
             <form onSubmit={handleForgotPassword} className="flex flex-col gap-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+              <div className="flex flex-col">
+                <label htmlFor="email" className="sr-only">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  className="p-4 rounded text-lg dark:bg-gray-700 dark:text-white"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
               <button
                 type="submit"
-                className={`py-2 px-4 rounded font-bold transition-colors mt-2 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                className="py-2 px-4 rounded font-bold bg-blue-500 text-white hover:bg-blue-600"
               >
-                Send Reset Link
+                Reset Password
               </button>
             </form>
           </div>
