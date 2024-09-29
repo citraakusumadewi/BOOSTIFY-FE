@@ -88,7 +88,6 @@ const SignIn: React.FC = () => {
             className="mx-auto"
           />
         </div>
-
         <div className={`w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
           <h2 className={`text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
             Sign In to Your Account
