@@ -182,6 +182,7 @@ const Recap: React.FC = () => {
                       ? '/silver-medal.png'
                       : '/bronze-medal.png';
 
+
                   return (
                     <div key={index} className={`${rankClasses} text-center`}>
                       <div className="relative">
@@ -189,6 +190,7 @@ const Recap: React.FC = () => {
                           src={medalIcon}
                           alt="medal"
                           className="absolute top-[-10px] left-[-15px] w-20 h-20 object-contain z-20"
+
                           width={80}
                           height={80}
                         />
@@ -206,6 +208,7 @@ const Recap: React.FC = () => {
           </div>
 
           {/* Cards Komponen */}
+
           <div className="xl:col-span-2">
             <div className="max-w-3xl mx-auto mt-10 mb-10">
               {dataToDisplay.length === 0 && isSearchApplied ? (
