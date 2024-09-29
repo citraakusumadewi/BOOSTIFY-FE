@@ -19,6 +19,7 @@ const Recap: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1); // Default to page 1
   const [totalPages, setTotalPages] = useState<number>(8);
+  const [hasMoreData, setHasMoreData] = useState<boolean>(true); // State to check if more data is available
   const [searchValue, setSearchValue] = useState<string>(''); // Search input state
   const [filteredData, setFilteredData] = useState<AttendanceItem[]>([]); // State for filtered data
   const [isSearchApplied, setIsSearchApplied] = useState<boolean>(false); // Check if search is applied
@@ -68,8 +69,16 @@ const Recap: React.FC = () => {
 
           const data = await response.json();
 
-          setAttendanceData(data.payload);
-          setTotalPages(data.pagination.totalPages); // Update total pages from the response
+          if (data.payload.length === 0) {
+            // If no more data, disable next page
+            setHasMoreData(false);
+          } else {
+            // If more data exists, append to the existing data
+            setAttendanceData((prevData) => [...prevData, ...data.payload]);
+            setTotalPages(data.pagination.totalPages); // Update total pages from the response
+            setHasMoreData(true); // Ensure "has more data" is true if data exists
+          }
+
           setLoading(false);
         } catch (error: any) {
           setError(error.message);
@@ -89,7 +98,7 @@ const Recap: React.FC = () => {
   };
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
+    if (hasMoreData) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -102,7 +111,7 @@ const Recap: React.FC = () => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value.toUpperCase()); // Convert input to uppercase
-  };  
+  };
 
   const handleApplySearch = () => {
     const filtered = attendanceData.filter((item) =>
@@ -154,31 +163,34 @@ const Recap: React.FC = () => {
           </button>
         </div>
 
+        {/* Data display */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          {/* Komponen Rank */}
-          <div className="2xl:col-span-1 lg:-translate-x-6">
-            <div className="items-center grid grid-cols-1 grid-cols-2 gap-6 gap-8">
+          {/* Rank Komponen */}
+          <div className="2xl:col-span-1 lg:-translate-x-6 ">
+          <div className="items-center grid grid-cols-1 grid-cols-2 gap-6 gap-8 mt-10 lg:mt-20 xl:mt-24 2xl:mt-28">
+
               {attendanceData
                 .sort((a, b) => b.totalAttendance - a.totalAttendance)
                 .slice(0, 3)
                 .map((attendee, index) => {
-                  const rankClasses = index === 0 
-                    ? 'col-span-2 flex justify-center' 
-                    : 'flex justify-center';
+                  const rankClasses = index === 0 ? 'col-span-2 flex justify-center' : 'flex justify-center';
 
-                  const medalIcon = index === 0 
-                    ? '/gold-medal.png'
-                    : index === 1
-                    ? '/silver-medal.png'
-                    : '/bronze-medal.png';
+                  const medalIcon =
+                    index === 0
+                      ? '/gold-medal.png'
+                      : index === 1
+                      ? '/silver-medal.png'
+                      : '/bronze-medal.png';
+
 
                   return (
                     <div key={index} className={`${rankClasses} text-center`}>
                       <div className="relative">
-                        <Image 
-                          src={medalIcon} 
-                          alt="medal" 
-                          className="absolute top-[-10px] left-[-15px] w-20 h-20 object-contain z-20" 
+                        <Image
+                          src={medalIcon}
+                          alt="medal"
+                          className="absolute top-[-10px] left-[-15px] w-20 h-20 object-contain z-20"
+
                           width={80}
                           height={80}
                         />
@@ -195,7 +207,8 @@ const Recap: React.FC = () => {
             </div>
           </div>
 
-          {/* Komponen Cards */}
+          {/* Cards Komponen */}
+
           <div className="xl:col-span-2">
             <div className="max-w-3xl mx-auto mt-10 mb-10">
               {dataToDisplay.length === 0 && isSearchApplied ? (
@@ -246,15 +259,24 @@ const Recap: React.FC = () => {
         {dataToDisplay.length > 0 && (
           <div className="flex justify-center items-center my-5">
             {currentPage > 1 && (
-              <button onClick={handlePreviousPage} className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}>
+              <button
+                onClick={handlePreviousPage}
+                className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}
+              >
                 ◀
               </button>
             )}
-            <button className={`text-[#EAD196] p-3 rounded-full mx-2 text-xl font-bold ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`} disabled>
+            <button
+              className={` ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'} p-3 rounded-full mx-2 text-xl font-bold ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}
+              disabled
+            >
               PAGE {currentPage}
             </button>
-            {currentPage < totalPages && (
-              <button onClick={handleNextPage} className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}>
+            {hasMoreData && currentPage < totalPages && (
+              <button
+                onClick={handleNextPage}
+                className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}
+              >
                 ▶
               </button>
             )}
@@ -265,5 +287,6 @@ const Recap: React.FC = () => {
     </div>
   );
 };
+
 
 export default Recap;

@@ -5,7 +5,7 @@ import Image from 'next/image'; // Import Next.js Image component
 import Link from 'next/link'; // Import Next.js Link component
 import { DefaultSession } from 'next-auth';
 import { useTheme } from '../styles/ThemeContext';
-
+import { MdClose } from 'react-icons/md'; // Import icon close dari react-icons
 // Extend the DefaultSession type to include the id and token
 interface CustomUser {
   id?: number;
@@ -28,7 +28,8 @@ const SignIn: React.FC = () => {
   const router = useRouter();
   const { isDarkMode } = useTheme();
   const { data: session } = useSession() as { data: CustomSession }; // Casting to CustomSession
-
+  const [showForgotPassword, setShowForgotPassword] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>('');
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -64,6 +65,17 @@ const SignIn: React.FC = () => {
     const value = e.target.value.toUpperCase();
     setAssistantCode(value);
   };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Call your API for sending a reset password email here
+    console.log("Email for password reset:", email);
+    setEmail('');
+    setShowForgotPassword(false);
+    alert('If an account with that email exists, a reset link will be sent.');
+  };
+
+
 
   return (
     <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
@@ -133,6 +145,14 @@ const SignIn: React.FC = () => {
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
+          {/* Forgot Password Link */}
+          <button
+            onClick={() => setShowForgotPassword(true)}
+            className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}
+          >
+            Forgot Password?
+          </button>
+
         </div>
       </div>
 
@@ -205,9 +225,52 @@ const SignIn: React.FC = () => {
                 {loading ? 'Signing In...' : 'Sign In'}
               </button>
             </form>
+            {/* Forgot Password Link */}
+            <button
+              onClick={() => setShowForgotPassword(true)}
+              className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#ead196]'}`}
+            >
+              Forgot Password?
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      {showForgotPassword && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className={`${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'} p-6 rounded shadow-md w-96 relative`}>
+      <button
+        onClick={() => setShowForgotPassword(false)}
+        className="absolute top-2 right-2 text-xl"
+      >
+        <MdClose className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`} />
+      </button>
+      <h2 className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'} text-lg font-bold mb-4`}>
+        Reset Password
+      </h2>
+      <form onSubmit={handleForgotPassword}>
+        <div className="mb-4">
+          <label htmlFor="email" className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'} block mb-2`}>
+            Enter your email :
+          </label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Email"
+            className={`${isDarkMode ? 'bg-[#d7b66a]' : 'bg-[#ead196]'} border-none border p-2 rounded w-full`}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit" className={`${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#bdbdbd]'} w-full ${isDarkMode ? 'text-[#ABABAB]' : 'text-[#515151]'} p-2 rounded`}>
+          Send Reset Link
+        </button>
+      </form>
+    </div>
+  </div>
+)}
     </div>
   );
 };

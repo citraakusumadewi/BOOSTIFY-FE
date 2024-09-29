@@ -226,7 +226,8 @@ const HomeNav: React.FC = () => {
               </div>
             </button>
             {isDropdownOpen && (
-              <div className={`absolute right-0 mt-2 p-4 ${isDarkMode ? 'bg-[#5b0a0a]' : 'bg-[#7D0A0A]'} border rounded shadow-lg z-10 w-[150px] `} >
+              <div className={`absolute right-0 mt-2 p-4 ${isDarkMode ? 'bg-[#5b0a0a]' : 'bg-[#7D0A0A]'} border border-none rounded shadow-lg z-10 w-[150px] `} >
+
                 <ul className="space-y-2">
                   <li>
                     <Link href="/Profile" passHref>
@@ -236,7 +237,8 @@ const HomeNav: React.FC = () => {
                     </Link>
                   </li>
                   <li>
-                    <button onClick={() => { setShowChangePassword(true); setIsDropdownOpen(false); }} className={`block text-sm font-bold  ${isDarkMode ? 'text-[#000000]' : 'text-[#3F3C38]'} py-2 border-none rounded ${isDarkMode ?  'bg-[#d7b66a]' : 'bg-[#EAD196]'} bg-opacity-80 `}>
+                    <button onClick={() => { setShowChangePassword(true); setIsDropdownOpen(false); }} className={`block w-full text-sm font-bold  ${isDarkMode ? 'text-[#000000]' : 'text-[#3F3C38]'} py-2 border-none rounded ${isDarkMode ?  'bg-[#d7b66a]' : 'bg-[#EAD196]'} bg-opacity-80 `}>
+
                       Change Password
                     </button>
                   </li>
@@ -281,7 +283,7 @@ const HomeNav: React.FC = () => {
                   </div>
                   {errorMessage && <p className="text-red-500 text-xs">{errorMessage}</p>}
                   <div className="flex justify-end gap-2">
-                    <button type="button" onClick={() => setShowChangePassword(false)} className={`px-4 py-2 ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#685D5D]'}  ${isDarkMode ? 'text-[#000]' : 'text-[#fff]'} border-none rounded`}>
+                    <button type="button" onClick={() => setShowChangePassword(false)} className={`px-4 py-2 ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#685D5D]'}  ${isDarkMode ? 'text-[#bdbdbd]' : 'text-[#fff]'} border-none rounded`}>
                       Cancel
                     </button>
                     <button type="submit" className={`px-4 py-2 ${isDarkMode ? 'bg-[#5b0a0a]' : 'bg-[#7D0A0A]'} ${isDarkMode ? 'text-[#d7b66a]' : 'text-[#ead196]'} rounded`}>Submit</button>
