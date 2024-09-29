@@ -11,7 +11,7 @@ import Image from 'next/image'; // Import Image from next/image
 const LandingPage: React.FC = () => {
   const router = useRouter();
   const { data: session, status } = useSession(); // Get the session data
-  const [isLoading, setIsLoading] = useState(true); // State to handle loading
+  const [loading, setIsLoading] = useState(true); // State to handle loading
   const { isDarkMode } = useTheme(); // Get the theme (dark/light mode)
 
   useEffect(() => {
@@ -29,9 +29,15 @@ const LandingPage: React.FC = () => {
     }
   }, [session, status, router]);
 
-  if (isLoading) {
-    // Optionally render a loading spinner or message
-    return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className={`loaderContainer flex justify-center items-center h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-gray-900'}`}>
+        <div className="loader relative w-12 aspect-[1/1] rounded-full border-[8px] border-transparent border-r-[#ffa50097] animate-spin">
+          <div className="absolute inset-[-8px] rounded-full border-[inherit] animate-[spin_2s_linear_infinite]"></div>
+          <div className="absolute inset-[-8px] rounded-full border-[inherit] animate-[spin_4s_linear_infinite]"></div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -39,7 +45,7 @@ const LandingPage: React.FC = () => {
       {session ? <HomeNav /> : <Navbar />}
 
       {/* Main Content */}
-      <main className="flex flex-col lg:flex-row items-center lg:justify-between mt-8 sm:mt-10 md:mt-12 lg:mt-16 mx-4 sm:mx-5 md:mx-8 lg:mx-10 xl:mx-16">
+      <main className="flex-grow flex flex-col lg:flex-row items-center lg:justify-between mt-8 sm:mt-10 md:mt-12 lg:mt-16 mx-4 sm:mx-5 md:mx-8 lg:mx-10 xl:mx-16">
         {/* Text Section */}
         <div className="lg:w-1/2 text-left mb-8 sm:mb-10 md:mb-12 lg:mb-0">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 lg:pl-0">
@@ -50,7 +56,7 @@ const LandingPage: React.FC = () => {
           </p>
           <div className="mt-6 sm:mt-8 ml-0 md:ml-0">
             <Link href="/SignIn" passHref>
-              <button className="bg-[#7D0A0A] text-[#EAD196] py-2 sm:py-3 px-5 sm:px-6 rounded-lg font-semibold shadow-lg transform hover:bg-red-700 transition-transform duration-300">
+              <button className={`py-2 sm:py-3 px-5 sm:px-6 rounded-lg font-semibold shadow-lg transform transition-transform duration-300 ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A] hover:bg-red-800' : 'bg-[#7D0A0A] text-[#EAD196] hover:bg-red-700'}`}>
                 See Your Attendance
               </button>
             </Link>

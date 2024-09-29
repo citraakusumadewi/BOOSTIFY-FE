@@ -5,7 +5,7 @@ import Image from 'next/image'; // Import Next.js Image component
 import Link from 'next/link'; // Import Next.js Link component
 import { DefaultSession } from 'next-auth';
 import { useTheme } from '../styles/ThemeContext';
-
+import { MdClose } from 'react-icons/md'; // Import icon close dari react-icons
 // Extend the DefaultSession type to include the id and token
 interface CustomUser {
   id?: number;
@@ -28,7 +28,8 @@ const SignIn: React.FC = () => {
   const router = useRouter();
   const { isDarkMode } = useTheme();
   const { data: session } = useSession() as { data: CustomSession }; // Casting to CustomSession
-
+  const [showForgotPassword, setShowForgotPassword] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>('');
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -43,7 +44,7 @@ const SignIn: React.FC = () => {
     setLoading(false);
 
     if (result?.error) {
-      setError('Invalid credentials');
+      setError('Wrong password!');
     } else {
       // Get the latest session after sign-in
       const session = await getSession() as CustomSession; // Ensure type casting here
@@ -65,45 +66,35 @@ const SignIn: React.FC = () => {
     setAssistantCode(value);
   };
 
-  return (
-    <div className="flex flex-col md:flex-row min-h-screen">
-      {/* Left Section - Logo and Tagline */}
-      <div className="hidden md:flex w-1/2 items-center justify-center bg-white">
-        <div className="text-center">
-          <Image 
-            src="/logo.png" 
-            alt="Boostify Logo" 
-            width={800} 
-            height={800} 
-            className="mx-auto"
-          />
-          <Image 
-            src="/tagline.png" 
-            alt="Tagline Logo" 
-            width={1000} 
-            height={1000} 
-            className="absolute top-52 left-[calc(50%+-500px)] w-[500px] h-auto mb-100 hidden lg:block" 
-          />
-        </div>
-      </div>
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Call your API for sending a reset password email here
+    console.log("Email for password reset:", email);
+    setEmail('');
+    setShowForgotPassword(false);
+    alert('If an account with that email exists, a reset link will be sent.');
+  };
 
-      {/* Right Section - Sign In Form */}
-      <div className="flex flex-col items-center justify-center w-full md:w-1/2 p-8 bg-[#D7B66A] md:bg-[#EDD291] bg-white">
-        
-        {/* Show logo above form for small screens */}
-        <div className="md:hidden mb-8 mt--16 text-center"> {/* Tambahkan mt-8 untuk geser ke bawah */}
+
+
+  return (
+    <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
+      {/* Mobile Only Section */}
+      <div className="sm:hidden flex flex-col items-center justify-center w-full p-8">
+        {/* Mobile Logo */}
+        <div className="mb-1 -mt-12 text-center">
           <Image 
-            src="/logo.png" 
+            src="/Boostifylogo.png" 
             alt="Boostify Logo" 
-            width={200} 
-            height={200} 
+            width={400} 
+            height={400} 
             className="mx-auto"
           />
         </div>
-        
-        {/* Form Sign In */}
-        <div className="w-full max-w-md bg-[#7D0A0A] p-8 rounded-lg -mt-12"> {/* Tambahkan mt-4 untuk geser form */}
-          <h2 className="text-3xl mb-8 font-bold text-[#EAD196] text-center">
+
+        {/* Mobile Sign In Form */}
+        <div className={`w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
+          <h2 className={`text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
             Sign In to Your Account
           </h2>
           <form className="flex flex-col gap-5" onSubmit={handleSignIn}>
@@ -112,8 +103,7 @@ const SignIn: React.FC = () => {
               <input
                 type="text"
                 id="assistantCode"
-                className="p-4 rounded bg-[#EAD196] text-lg w-full"
-                style={{ color: '#7D0A0A' }}
+                className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
                 placeholder="Assistant Code"
                 value={assistantCode}
                 onChange={handleAssistantCodeChange}
@@ -126,18 +116,16 @@ const SignIn: React.FC = () => {
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
-                className="p-4 rounded bg-[#EAD196] text-lg w-full"
-                style={{ color: '#7D0A0A' }}
+                className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 text-[#7D0A0A]"
+                className={`absolute right-4 ${isDarkMode ? 'text-[#5B0A0A]' : 'text-[#7D0A0A]'}`}
               >
                 <Image
                   src={showPassword ? '/eye-slash.png' : '/eye.png'}
@@ -151,14 +139,137 @@ const SignIn: React.FC = () => {
             {error && <div className="text-red-500 mt-2">{error}</div>}
             <button
               type="submit"
-              className="py-2 px-4 rounded font-bold bg-[#EAD196] text-[#7D0A0A] hover:bg-yellow-300 transition-colors mt-6"
+              className={`py-2 px-4 rounded font-bold transition-colors mt-6 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
               disabled={loading}
             >
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
+          {/* Forgot Password Link */}
+          <button
+            onClick={() => setShowForgotPassword(true)}
+            className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}
+          >
+            Forgot Password?
+          </button>
         </div>
       </div>
+
+      {/* Desktop Only Section */}
+      <div className="hidden sm:flex flex-row w-full min-h-screen">
+        {/* Left Section - Logo and Tagline for larger screens */}
+        <div className="w-1/2 flex items-center justify-center">
+          <Image 
+            src={isDarkMode ? '/logoTagline-dark.png' : '/logoTagline.png'} 
+            alt="Boostify Logo" 
+            width={800} 
+            height={800} 
+            className="mx-auto"
+            priority
+          />
+        </div>
+
+        {/* Right Section - Larger screen sign-in form */}
+        <div className={`w-1/2 flex items-center justify-center ${isDarkMode ? 'bg-[#D7B66A]' : 'bg-[#EAD196]'}`}>
+          {/* Form Sign In */}
+          <div className={`w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
+            <h2 className={`text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
+              Sign In to Your Account
+            </h2>
+            <form className="flex flex-col gap-5" onSubmit={handleSignIn}>
+              <div className="flex flex-col w-full">
+                <label htmlFor="assistantCode" className="sr-only">Assistant Code</label>
+                <input
+                  type="text"
+                  id="assistantCode"
+                  className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                  placeholder="Assistant Code"
+                  value={assistantCode}
+                  onChange={handleAssistantCodeChange}
+                  required
+                />
+              </div>
+
+              <div className="relative flex items-center w-full">
+                <label htmlFor="password" className="sr-only">Password</label>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={`absolute right-4 ${isDarkMode ? 'text-[#5B0A0A]' : 'text-[#7D0A0A]'}`}
+                >
+                  <Image
+                    src={showPassword ? '/eye-slash.png' : '/eye.png'}
+                    alt="Toggle Password Visibility"
+                    width={35}
+                    height={30}
+                  />
+                </button>
+              </div>
+
+              {error && <div className="text-red-500 mt-2">{error}</div>}
+              <button
+                type="submit"
+                className={`py-2 px-4 rounded font-bold transition-colors mt-6 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                disabled={loading}
+              >
+                {loading ? 'Signing In...' : 'Sign In'}
+              </button>
+            </form>
+            {/* Forgot Password Link */}
+            <button
+              onClick={() => setShowForgotPassword(true)}
+              className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#ead196]'}`}
+            >
+              Forgot Password?
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Forgot Password Modal */}
+      {showForgotPassword && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className={`${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'} p-6 rounded shadow-md w-96 relative`}>
+      <button
+        onClick={() => setShowForgotPassword(false)}
+        className="absolute top-2 right-2 text-xl"
+      >
+        <MdClose className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`} />
+      </button>
+      <h2 className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'} text-lg font-bold mb-4`}>
+        Reset Password
+      </h2>
+      <form onSubmit={handleForgotPassword}>
+        <div className="mb-4">
+          <label htmlFor="email" className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'} block mb-2`}>
+            Enter your email :
+          </label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Email"
+            className={`${isDarkMode ? 'bg-[#d7b66a]' : 'bg-[#ead196]'} border-none border p-2 rounded w-full`}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit" className={`${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#bdbdbd]'} w-full ${isDarkMode ? 'text-[#ABABAB]' : 'text-[#515151]'} p-2 rounded`}>
+          Send Reset Link
+        </button>
+      </form>
+    </div>
+  </div>
+)}
     </div>
   );
 };

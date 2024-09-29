@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -11,18 +11,23 @@ const HomeNav: React.FC = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [assistantCode, setAssistantCode] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const formRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { isDarkMode, toggleMode } = useTheme();
 
   useEffect(() => {
     const fetchUserData = async () => {
       const authDataString = localStorage.getItem('authData');
-      console.log('Retrieved authData from localStorage:', authDataString);
-
       if (authDataString) {
         const authData = JSON.parse(authDataString);
         const token = authData.token.token;
-        console.log('Extracted token:', token);
 
         if (token) {
           try {
@@ -36,7 +41,6 @@ const HomeNav: React.FC = () => {
 
             if (!response.ok) {
               if (response.status === 401) {
-                console.warn('Token invalid, redirecting to SignIn');
                 localStorage.removeItem('authData');
                 router.push('/SignIn');
               } else {
@@ -46,17 +50,12 @@ const HomeNav: React.FC = () => {
             }
 
             const data = await response.json();
-            console.log('Fetched user data:', data);
             setUserName(data.name);
             setAssistantCode(data.assisstant_code);
           } catch (error) {
             console.error('Failed to fetch user data:', error);
           }
-        } else {
-          console.warn('No token found in authData');
         }
-      } else {
-        console.warn('No authData found');
       }
     };
 
@@ -67,8 +66,6 @@ const HomeNav: React.FC = () => {
     try {
       localStorage.removeItem('authData');
       localStorage.removeItem('nextauth.message');
-      console.log('Sign out successful, session and token removed');
-
       await signOut({ callbackUrl: '/' });
     } catch (error) {
       console.error('Sign out failed:', error);
@@ -77,21 +74,96 @@ const HomeNav: React.FC = () => {
     }
   };
 
+  const handleChangePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage('');
+  
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setErrorMessage('All password fields are required.');
+      return;
+    }
+  
+    if (newPassword !== confirmPassword) {
+      setErrorMessage('New password and confirmation do not match.');
+      return;
+    }
+  
+    try {
+      const authDataString = localStorage.getItem('authData');
+      const authData = authDataString ? JSON.parse(authDataString) : null;
+      const token = authData ? authData.token.token : null;
+  
+      console.log('Submitting:', { currentPassword, newPassword, confirmPassword });
+  
+      const response = await fetch('https://boostify-back-end.vercel.app/api/auth/updatePassword', {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+          confirmPassword
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        setErrorMessage(errorData.message || 'Failed to update password.');
+      } else {
+        alert('Password updated successfully');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setShowChangePassword(false);
+      }
+    } catch (error) {
+      setErrorMessage('Error updating password.');
+      console.error('Error:', error);
+    }
+  };  
+
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
-    console.log('Menu Toggled:', isMenuOpen); // Debugging log
   };
+
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+      if (formRef.current && !formRef.current.contains(event.target as Node)) {
+        setShowChangePassword(false);
+      }
+    };
+
+    if (isDropdownOpen || showChangePassword) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDropdownOpen, showChangePassword]);
 
   return (
     <div className={`w-full min-h-100 ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
-      <header className={`flex justify-between items-center px-4 py-4 mt-4 h-20 ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
+      <header className={`flex justify-between items-center px-4 py-4 h-20 ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
         <Link href="/HomePage" passHref>
           <Image
-            src="/logo.png"
+            src="/Boostifylogo.png"
             alt="Boostify Logo"
-            className="h-18 w-28"
-            width={50}
-            height={50}
+            className="h-24 w-auto sm:h-24 md:h-28 lg:h-32" // Ukuran h ditingkatkan
+            width={180}
+            height={180}
           />
         </Link>
         <nav className="flex items-center gap-5">
@@ -110,36 +182,114 @@ const HomeNav: React.FC = () => {
             <span className="w-6 h-0.5 bg-gray-500"></span>
           </button>
           {/* Navbar Links */}
-          <ul className={`flex-col items-center gap-8 transition-all duration-300 md:flex ${isMenuOpen ? 'flex' : 'hidden'} ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'} absolute top-20 left-0 right-0 p-4 md:static md:flex-row md:shadow-none shadow-lg z-50`}>
+          <ul className={`flex-col items-center gap-8 md:flex ${isMenuOpen ? 'flex' : 'hidden'} ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'} absolute top-20 left-0 right-0 p-4 md:static md:flex-row md:shadow-none shadow-lg z-50`}>
             <li className="w-full text-center md:w-auto">
               <Link href="/About" passHref>
-                <span className={`font-medium ${isDarkMode ? 'text-[#EAD196]' : 'text-red-700'}`}>
+                <span className={`font-medium ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}>
                   About
                 </span>
               </Link>
             </li>
             <li className="w-full text-center md:w-auto">
               <Link href="/Team" passHref>
-                <span className={`font-medium ${isDarkMode ? 'text-[#EAD196]' : 'text-red-700'}`}>
+                <span className={`font-medium ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}>
                   Our Team
                 </span>
               </Link>
             </li>
             <li className="w-full text-center md:w-auto">
-              <button onClick={() => setShowPopup(true)} className={`font-bold ${isDarkMode ? 'text-[#EAD196]' : 'text-red-700'}`}>
+              <Link href="/LiveReport" passHref>
+                <span className={`font-medium ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}>
+                  Live Report
+                </span>
+              </Link>
+            </li>
+            <li className="w-full text-center md:w-auto">
+              <Link href="/Recap" passHref>
+                <span className={`font-medium ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}>
+                  Recap
+                </span>
+              </Link>
+            </li>
+            <li className="w-full text-center md:w-auto">
+              <button onClick={() => setShowPopup(true)} className={`font-bold ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}>
                 Sign Out
               </button>
             </li>
           </ul>
-          <Link href="/Profile" passHref>
-            <div className="bg-transparent border-none cursor-pointer">
-              <div className="flex items-center justify-center bg-[#EAD196] rounded-full w-12 h-12">
+          <div className="relative" ref={dropdownRef}>
+            <button onClick={handleDropdownToggle} className="bg-transparent border-none cursor-pointer">
+              <div className={`flex items-center justify-center rounded-full w-12 h-12 ${isDarkMode ? 'bg-[#D7B66A]' : 'bg-[#EAD196]'}`}>
                 {assistantCode && (
-                  <span className="text-red-700 font-bold text-sm">{assistantCode}</span>
+                  <span className={`font-bold text-sm ${isDarkMode ? 'text-[#5B0A0A]' : 'text-[#7D0A0A]'}`}>{assistantCode}</span>
                 )}
               </div>
+            </button>
+            {isDropdownOpen && (
+              <div className={`absolute right-0 mt-2 p-4 ${isDarkMode ? 'bg-[#5b0a0a]' : 'bg-[#7D0A0A]'} border border-none rounded shadow-lg z-10 w-[150px] `} >
+                <ul className="space-y-2">
+                  <li>
+                    <Link href="/Profile" passHref>
+                    <button className={`block w-full text-sm font-bold text-center ${isDarkMode ? 'text-[#000000]' : 'text-[#3F3C38]'} py-2 border-none rounded ${isDarkMode ?  'bg-[#d7b66a]' : 'bg-[#EAD196]'} bg-opacity-80 `}>
+                      Profile
+                    </button>
+                    </Link>
+                  </li>
+                  <li>
+                    <button onClick={() => { setShowChangePassword(true); setIsDropdownOpen(false); }} className={`block w-full text-sm font-bold  ${isDarkMode ? 'text-[#000000]' : 'text-[#3F3C38]'} py-2 border-none rounded ${isDarkMode ?  'bg-[#d7b66a]' : 'bg-[#EAD196]'} bg-opacity-80 `}>
+                      Change Password
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+          {showChangePassword && (
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div ref={formRef} className={` ${isDarkMode ? 'bg-[#d7b66a]' : 'bg-[#ead196]'} p-8 rounded-lg shadow-lg w-96 relative`}>
+                <form onSubmit={handleChangePasswordSubmit}>
+                  <h2 className={`text-xl  ${isDarkMode ? 'text-[#5b0a0a]' : 'text-[#7D0A0A]'} font-bold mb-4 text-center`}>Change Password</h2>
+                  <div className="mb-2">
+                    <label className={`block font-bold ${isDarkMode ? 'text-[#5b0a0a]' : 'text-[#7D0A0A]'} text-sm`}>Current Password</label>
+                    <input
+                      type="password"
+                      className={`w-full ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#584B4B]'} bg-opacity-50 p-2 border-none rounded`}
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className={`block font-bold ${isDarkMode ? 'text-[#5b0a0a]' : 'text-[#7D0A0A]'} text-sm`}>New Password</label>
+                    <input
+                      type="password"
+                      className={`w-full ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#584B4B]'} bg-opacity-50 p-2 border-none rounded`}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className={`block font-bold ${isDarkMode ? 'text-[#5b0a0a]' : 'text-[#7D0A0A]'} text-sm`}>Confirm New Password</label>
+                    <input
+                      type="password"
+                      className={`w-full ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#584B4B]'} bg-opacity-50 p-2 border-none rounded`}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  {errorMessage && <p className="text-red-500 text-xs">{errorMessage}</p>}
+                  <div className="flex justify-end gap-2">
+                    <button type="button" onClick={() => setShowChangePassword(false)} className={`px-4 py-2 ${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#685D5D]'}  ${isDarkMode ? 'text-[#bdbdbd]' : 'text-[#fff]'} border-none rounded`}>
+                      Cancel
+                    </button>
+                    <button type="submit" className={`px-4 py-2 ${isDarkMode ? 'bg-[#5b0a0a]' : 'bg-[#7D0A0A]'} ${isDarkMode ? 'text-[#d7b66a]' : 'text-[#ead196]'} rounded`}>Submit</button>
+                  </div>
+                </form>
+              </div>
             </div>
-          </Link>
+          )}
         </nav>
       </header>
 

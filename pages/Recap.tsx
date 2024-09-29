@@ -3,6 +3,7 @@ import HomeNav from '../components/HomeNav';
 import Footer from '../components/Footer';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useTheme } from '../styles/ThemeContext'; // Import useTheme
 import Image from 'next/image'; // Import Image from next/image
 
 interface AttendanceItem {
@@ -18,7 +19,11 @@ const Recap: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1); // Default to page 1
   const [totalPages, setTotalPages] = useState<number>(8);
-  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [hasMoreData, setHasMoreData] = useState<boolean>(true); // State to check if more data is available
+  const [searchValue, setSearchValue] = useState<string>(''); // Search input state
+  const [filteredData, setFilteredData] = useState<AttendanceItem[]>([]); // State for filtered data
+  const [isSearchApplied, setIsSearchApplied] = useState<boolean>(false); // Check if search is applied
+  const { isDarkMode } = useTheme();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleFilter = () => {
@@ -63,10 +68,17 @@ const Recap: React.FC = () => {
           }
 
           const data = await response.json();
-          console.log('Fetched data:', data);
 
-          setAttendanceData(data.payload);
-          setTotalPages(data.pagination.totalPages); // Update total pages from the response
+          if (data.payload.length === 0) {
+            // If no more data, disable next page
+            setHasMoreData(false);
+          } else {
+            // If more data exists, append to the existing data
+            setAttendanceData((prevData) => [...prevData, ...data.payload]);
+            setTotalPages(data.pagination.totalPages); // Update total pages from the response
+            setHasMoreData(true); // Ensure "has more data" is true if data exists
+          }
+
           setLoading(false);
         } catch (error: any) {
           setError(error.message);
@@ -86,7 +98,7 @@ const Recap: React.FC = () => {
   };
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
+    if (hasMoreData) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -97,9 +109,21 @@ const Recap: React.FC = () => {
     }
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value.toUpperCase()); // Convert input to uppercase
+  };
+
+  const handleApplySearch = () => {
+    const filtered = attendanceData.filter((item) =>
+      item.assisstant_code.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilteredData(filtered); // Set filtered data based on search
+    setIsSearchApplied(true); // Mark that search has been applied
+  };
+
   if (loading) {
     return (
-      <div className="loaderContainer flex justify-center items-center h-screen">
+      <div className={`loaderContainer flex justify-center items-center h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-gray-900'}`}>
         <div className="loader relative w-12 aspect-[1/1] rounded-full border-[8px] border-transparent border-r-[#ffa50097] animate-spin">
           <div className="absolute inset-[-8px] rounded-full border-[inherit] animate-[spin_2s_linear_infinite]"></div>
           <div className="absolute inset-[-8px] rounded-full border-[inherit] animate-[spin_4s_linear_infinite]"></div>
@@ -107,133 +131,159 @@ const Recap: React.FC = () => {
       </div>
     );
   }
-  
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  // Data for first page's rank section
-  const rankedData = attendanceData.slice(0, 3);
-
-  // Data for cards (showing a maximum of 5 cards per page)
-  const cardData = attendanceData.slice(3);
-
-  const handleDateChange = (date: Date | null) => {
-    setStartDate(date);
-    toggleFilter(); // Close dropdown after selecting date
-  };
+  const dataToDisplay = isSearchApplied ? filteredData : attendanceData;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-gray-900'}`}>
       <HomeNav />
-      <main className="flex-1 p-6 text-center">
-        <h2 className="text-4xl font-bold text-gray-600 my-24">ATTENDANCE RECAP</h2>
-        {currentPage === 1 ? (
-          // First page specific layout
-          <div>
-            <div className="relative h-[250px] mb-16">
-            {rankedData.map((attendee, index) => {
-              const rankClasses = index === 0 
-                ? 'top-0 left-1/2 transform -translate-x-1/2' 
-                : index === 1 
-                ? 'top-36 left-1/4' 
-                : 'top-36 right-1/4';
-              
-              const medalIcon = index === 0 
-                ? '/gold-medal.png'
-                : index === 1
-                ? '/silver-medal.png'
-                : '/bronze-medal.png';
-              
-              return (
-                <div key={index} className={`text-center text-red-800 absolute flex flex-col items-center ${rankClasses}`}>
-                  <Image 
-                    src={medalIcon} 
-                    alt="medal" 
-                    className="absolute top-[-10px] left-[-15px] w-20 h-20 object-contain z-20" 
-                    width={80} // Ganti dengan ukuran yang sesuai
-                    height={80} // Ganti dengan ukuran yang sesuai
-                  />
-                  <div className="bg-[#EAD196] w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10">
-                    <span>{attendee.assisstant_code}</span>
-                  </div>
-                  <p className="text-3xl font-bold text-gray-800 mt-2">{attendee.totalAttendance}</p>
-                </div>
-              );
-            })}
+      <main className="flex-1 px-4 py-6 text-center sm:px-6 md:px-10 lg:px-16 xl:px-24">
+        <h2 className={`text-3xl font-bold mb-16 sm:text-4xl lg:text-5xl xl:my-24 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          ATTENDANCE RECAP
+        </h2>
+
+        {/* Search bar dan Apply button */}
+        <div className="flex justify-center items-center mb-10">
+          <input
+            type="text"
+            value={searchValue}
+            onChange={handleSearchChange}
+            placeholder="Search Assistant Code"
+            className={`p-2 rounded-lg border-2 ${isDarkMode ? 'bg-[#2C2C2C] text-white' : 'bg-white text-gray-900'}`}
+          />
+          <button
+            onClick={handleApplySearch}
+            className={`ml-4 px-6 py-2 font-bold rounded-lg ${isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A]' : 'bg-[#7D0A0A] text-[#EAD196]'} hover:bg-red-700`}
+          >
+            Apply
+          </button>
+        </div>
+
+        {/* Data display */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          {/* Rank Komponen */}
+          <div className="2xl:col-span-1 lg:-translate-x-6 ">
+          <div className="items-center grid grid-cols-1 grid-cols-2 gap-6 gap-8 mt-10 lg:mt-20 xl:mt-24 2xl:mt-28">
+
+              {attendanceData
+                .sort((a, b) => b.totalAttendance - a.totalAttendance)
+                .slice(0, 3)
+                .map((attendee, index) => {
+                  const rankClasses = index === 0 ? 'col-span-2 flex justify-center' : 'flex justify-center';
+
+                  const medalIcon =
+                    index === 0
+                      ? '/gold-medal.png'
+                      : index === 1
+                      ? '/silver-medal.png'
+                      : '/bronze-medal.png';
+
+                  return (
+                    <div key={index} className={`${rankClasses} text-center`}>
+                      <div className="relative">
+                        <Image
+                          src={medalIcon}
+                          alt="medal"
+                          className="absolute top-[-10px] left-[-15px] w-20 h-20 object-contain z-20"
+                          width={80}
+                          height={80}
+                        />
+                        <div className={`w-36 h-36 rounded-full flex justify-center items-center text-2xl font-bold relative z-10 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}>
+                          <span>{attendee.assisstant_code}</span>
+                        </div>
+                        <p className={`text-3xl font-bold mt-2 mb-6 ${isDarkMode ? 'text-[#BDBDBD]' : 'text-[#3F3C38]'}`}>
+                          {attendee.totalAttendance}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
-            <div className="relative inline-block text-right mt-20">
-              <button onClick={toggleFilter} className="text-[#3F3C38] text-base flex items-center">
-                Filter
-              </button>
-              {filterOpen && (
-                <div ref={dropdownRef} className="absolute right-0 bg-[#EAD196] shadow-lg rounded-lg p-4 mt-2">
-                  <p className="font-bold mb-2">Sort By:</p>
-                  <ul className="list-none p-0 m-0">
-                    <li className="text-[#3F3C38] text-sm cursor-pointer py-1 hover:underline">
-                      <DatePicker selected={startDate} onChange={handleDateChange} placeholderText="Select Date" />
-                    </li>
-                    <li onClick={toggleFilter} className="text-[#3F3C38] text-sm cursor-pointer py-1 hover:underline">
-                      Assistant Code
-                    </li>
-                  </ul>
+          </div>
+
+          {/* Cards Komponen */}
+          <div className="xl:col-span-2">
+            <div className="max-w-3xl mx-auto mt-10 mb-10">
+              {dataToDisplay.length === 0 && isSearchApplied ? (
+                <div className={`text-xl font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-900'}`}>
+                  Data Not Found
                 </div>
+              ) : (
+                dataToDisplay
+                  .slice((currentPage - 1) * 5, currentPage * 5) // Batasi tampilan 5 cards per page
+                  .map((attendee, index) => (
+                    <div
+                      key={index}
+                      className={`flex justify-between items-center p-5 my-4 rounded-lg shadow-lg w-full ${
+                        isDarkMode ? 'bg-[#D7B66A] text-[#3F3C38]' : 'bg-[#EAD196] text-[#3F3C38]'
+                      }`}
+                    >
+                      <div className="text-left">
+                        <h3
+                          className={`text-2xl font-bold ${
+                            isDarkMode ? 'text-[#3F3C38]' : 'text-[#4A4A4A]'
+                          }`}
+                        >
+                          {attendee.assisstant_code}
+                        </h3>
+                        <p
+                          className={`text-lg ${
+                            isDarkMode ? 'text-[#3F3C38]' : 'text-[#4A4A4A]'
+                          }`}
+                        >
+                          {attendee.name}
+                        </p>
+                      </div>
+                      <div
+                        className={`rounded-lg p-4 flex items-center justify-center shadow-lg w-[75px] h-[60px] text-2xl text-center font-bold ${
+                          isDarkMode ? 'bg-[#5B0A0A] text-[#D7B66A]' : 'bg-[#7D0A0A] text-[#EAD196]'
+                        }`}
+                      >
+                        {attendee.totalAttendance}
+                      </div>
+                    </div>
+                  ))
               )}
             </div>
-            <div className="max-w-md mx-auto mt-10 mb-10">
-              {attendanceData.map((attendee, index) => (
-                <div key={index} className="bg-[#EAD196] flex justify-between p-[20px] my-4 rounded-lg shadow-lg w-full">
-                  <div className="text-left">
-                    <h3 className="text-2xl font-bold text-[#3F3C38]">{attendee.assisstant_code}</h3>
-                    <p className="text-lg text-[#4A4A4A]">{attendee.name}</p>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="bg-[#7D0A0A] rounded-lg p-4 flex items-center justify-center shadow-lg w-[75px] h-[60px] text-2xl text-[#EAD196] text-center">
-                      {attendee.totalAttendance}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
-        ) : (
-          // Other pages layout
-          <div className="mx-auto max-w-md">
-            {attendanceData.map((attendee, index) => (
-              <div key={index} className="bg-[#EAD196] flex justify-between p-5 mb-5 rounded-lg shadow-md">
-                <div className="text-left">
-                  <h3 className="text-xl font-bold text-gray-800">{attendee.assisstant_code}</h3>
-                  <p className="text-lg text-gray-600">{attendee.name}</p>
-                </div>
-                <div className="flex items-center">
-                  <div className="bg-red-800 text-[#EAD196] rounded-lg p-2 flex items-center justify-center shadow-md w-20 h-15 text-xl text-center">
-                    {attendee.totalAttendance}
-                  </div>
-                </div>
-              </div>
-            ))}
+        </div>
+
+        {/* Pagination */}
+        {dataToDisplay.length > 0 && (
+          <div className="flex justify-center items-center my-5">
+            {currentPage > 1 && (
+              <button
+                onClick={handlePreviousPage}
+                className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}
+              >
+                ◀
+              </button>
+            )}
+            <button
+              className={` ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'} p-3 rounded-full mx-2 text-xl font-bold ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}
+              disabled
+            >
+              PAGE {currentPage}
+            </button>
+            {hasMoreData && currentPage < totalPages && (
+              <button
+                onClick={handleNextPage}
+                className={`p-2 rounded-full mx-2 text-xl transition-colors ${isDarkMode ? 'bg-[#5B0A0A] hover:bg-red-800 text-[#D7B66A]' : 'bg-[#7D0A0A] hover:bg-red-700 text-[#EAD196]'}`}
+              >
+                ▶
+              </button>
+            )}
           </div>
         )}
-        <div className="flex justify-center items-center my-5">
-          {currentPage > 1 && (
-            <button onClick={handlePreviousPage} className="bg-red-800 text-[#EAD196] p-2 rounded-full mx-2 text-xl transition-colors hover:bg-red-700">
-              ◀
-            </button>
-          )}
-          <button className="bg-red-800 text-[#EAD196] p-3 rounded-full mx-2 text-xl font-bold" disabled>
-            PAGE {currentPage}
-          </button>
-          {currentPage < totalPages && (
-            <button onClick={handleNextPage} className="bg-red-800 text-[#EAD196] p-2 rounded-full mx-2 text-xl transition-colors hover:bg-red-700">
-              ▶
-            </button>
-          )}
-        </div>
       </main>
       <Footer />
     </div>
   );
 };
+
 
 export default Recap;
