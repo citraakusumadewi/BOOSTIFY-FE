@@ -78,7 +78,7 @@ const SignIn: React.FC = () => {
 
 
   return (
-    <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
+    <div className={flex flex-col min-h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}}>
       {/* Mobile Only Section */}
       <div className="sm:hidden flex flex-col items-center justify-center w-full p-8">
         {/* Mobile Logo */}
@@ -93,8 +93,8 @@ const SignIn: React.FC = () => {
         </div>
 
         {/* Mobile Sign In Form */}
-        <div className={`w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
-          <h2 className={`text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
+        <div className={w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}}>
+          <h2 className={text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}}>
             Sign In to Your Account
           </h2>
           <form className="flex flex-col gap-5" onSubmit={handleSignIn}>
@@ -103,7 +103,7 @@ const SignIn: React.FC = () => {
               <input
                 type="text"
                 id="assistantCode"
-                className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                className={p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}}
                 placeholder="Assistant Code"
                 value={assistantCode}
                 onChange={handleAssistantCodeChange}
@@ -116,7 +116,7 @@ const SignIn: React.FC = () => {
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
-                className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                className={p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -125,7 +125,7 @@ const SignIn: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className={`absolute right-4 ${isDarkMode ? 'text-[#5B0A0A]' : 'text-[#7D0A0A]'}`}
+                className={absolute right-4 ${isDarkMode ? 'text-[#5B0A0A]' : 'text-[#7D0A0A]'}}
               >
                 <Image
                   src={showPassword ? '/eye-slash.png' : '/eye.png'}
@@ -139,7 +139,7 @@ const SignIn: React.FC = () => {
             {error && <div className="text-red-500 mt-2">{error}</div>}
             <button
               type="submit"
-              className={`py-2 px-4 rounded font-bold transition-colors mt-6 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+              className={py-2 px-4 rounded font-bold transition-colors mt-6 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}}
               disabled={loading}
             >
               {loading ? 'Signing In...' : 'Sign In'}
@@ -148,11 +148,10 @@ const SignIn: React.FC = () => {
           {/* Forgot Password Link */}
           <button
             onClick={() => setShowForgotPassword(true)}
-            className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}
+            className={mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}}
           >
             Forgot Password?
           </button>
-
         </div>
       </div>
 
@@ -171,10 +170,10 @@ const SignIn: React.FC = () => {
         </div>
 
         {/* Right Section - Larger screen sign-in form */}
-        <div className={`w-1/2 flex items-center justify-center ${isDarkMode ? 'bg-[#D7B66A]' : 'bg-[#EAD196]'}`}>
+        <div className={w-1/2 flex items-center justify-center ${isDarkMode ? 'bg-[#D7B66A]' : 'bg-[#EAD196]'}}>
           {/* Form Sign In */}
-          <div className={`w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
-            <h2 className={`text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
+          <div className={w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}}>
+            <h2 className={text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}}>
               Sign In to Your Account
             </h2>
             <form className="flex flex-col gap-5" onSubmit={handleSignIn}>
@@ -183,7 +182,7 @@ const SignIn: React.FC = () => {
                 <input
                   type="text"
                   id="assistantCode"
-                  className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                  className={p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}}
                   placeholder="Assistant Code"
                   value={assistantCode}
                   onChange={handleAssistantCodeChange}
@@ -196,7 +195,7 @@ const SignIn: React.FC = () => {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id="password"
-                  className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                  className={p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}}
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -205,7 +204,7 @@ const SignIn: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className={`absolute right-4 ${isDarkMode ? 'text-[#5B0A0A]' : 'text-[#7D0A0A]'}`}
+                  className={absolute right-4 ${isDarkMode ? 'text-[#5B0A0A]' : 'text-[#7D0A0A]'}}
                 >
                   <Image
                     src={showPassword ? '/eye-slash.png' : '/eye.png'}
@@ -219,7 +218,7 @@ const SignIn: React.FC = () => {
               {error && <div className="text-red-500 mt-2">{error}</div>}
               <button
                 type="submit"
-                className={`py-2 px-4 rounded font-bold transition-colors mt-6 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                className={py-2 px-4 rounded font-bold transition-colors mt-6 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}}
                 disabled={loading}
               >
                 {loading ? 'Signing In...' : 'Sign In'}
@@ -228,7 +227,7 @@ const SignIn: React.FC = () => {
             {/* Forgot Password Link */}
             <button
               onClick={() => setShowForgotPassword(true)}
-              className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#ead196]'}`}
+              className={mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#ead196]'}}
             >
               Forgot Password?
             </button>
@@ -239,32 +238,32 @@ const SignIn: React.FC = () => {
       {/* Forgot Password Modal */}
       {showForgotPassword && (
   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className={`${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'} p-6 rounded shadow-md w-96 relative`}>
+    <div className={${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'} p-6 rounded shadow-md w-96 relative}>
       <button
         onClick={() => setShowForgotPassword(false)}
         className="absolute top-2 right-2 text-xl"
       >
-        <MdClose className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`} />
+        <MdClose className={${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}} />
       </button>
-      <h2 className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'} text-lg font-bold mb-4`}>
+      <h2 className={${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'} text-lg font-bold mb-4}>
         Reset Password
       </h2>
       <form onSubmit={handleForgotPassword}>
         <div className="mb-4">
-          <label htmlFor="email" className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'} block mb-2`}>
+          <label htmlFor="email" className={${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'} block mb-2}>
             Enter your email :
           </label>
           <input
             type="email"
             id="email"
             placeholder="Email"
-            className={`${isDarkMode ? 'bg-[#d7b66a]' : 'bg-[#ead196]'} border-none border p-2 rounded w-full`}
+            className={${isDarkMode ? 'bg-[#d7b66a]' : 'bg-[#ead196]'} border-none border p-2 rounded w-full}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
-        <button type="submit" className={`${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#bdbdbd]'} w-full ${isDarkMode ? 'text-[#ABABAB]' : 'text-[#515151]'} p-2 rounded`}>
+        <button type="submit" className={${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#bdbdbd]'} w-full ${isDarkMode ? 'text-[#ABABAB]' : 'text-[#515151]'} p-2 rounded}>
           Send Reset Link
         </button>
       </form>
