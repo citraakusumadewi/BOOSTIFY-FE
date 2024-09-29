@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { signIn, useSession, getSession } from 'next-auth/react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { DefaultSession } from 'next-auth';
 import { useTheme } from '../styles/ThemeContext';
-import { MdClose } from 'react-icons/md'; 
+import { MdClose } from 'react-icons/md';
 
 // Extend the DefaultSession type to include the id and token
 interface CustomUser {
@@ -133,20 +132,22 @@ const SignIn: React.FC = () => {
             </div>
 
             {error && <div className="text-red-500 mt-2">{error}</div>}
+            
+            <button
+              onClick={() => setShowForgotPassword(true)}
+              className={`mt-2 underline text-left ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}
+            >
+              Forgot Password?
+            </button>
+
             <button
               type="submit"
-              className={`py-2 px-4 rounded font-bold transition-colors mt-6 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+              className={`py-2 px-4 rounded font-bold transition-colors mt-4 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
               disabled={loading}
             >
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
-          <button
-            onClick={() => setShowForgotPassword(true)}
-            className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}
-          >
-            Forgot Password?
-          </button>
         </div>
       </div>
 
@@ -208,49 +209,55 @@ const SignIn: React.FC = () => {
               </div>
 
               {error && <div className="text-red-500 mt-2">{error}</div>}
+
+              <button
+                onClick={() => setShowForgotPassword(true)}
+                className={`mt-2 underline text-left ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}
+              >
+                Forgot Password?
+              </button>
+
               <button
                 type="submit"
-                className={`py-2 px-4 rounded font-bold transition-colors mt-6 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                className={`py-2 px-4 rounded font-bold transition-colors mt-4 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
                 disabled={loading}
               >
                 {loading ? 'Signing In...' : 'Sign In'}
               </button>
             </form>
-            <button
-              onClick={() => setShowForgotPassword(true)}
-              className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}
-            >
-              Forgot Password?
-            </button>
           </div>
         </div>
       </div>
 
       {showForgotPassword && (
-        <div className={`fixed inset-0 z-50 flex items-center justify-center ${isDarkMode ? 'bg-[#0D0D0D]' : 'bg-white'} bg-opacity-80`}>
-          <div className={`p-8 rounded-lg relative max-w-md w-full ${isDarkMode ? 'bg-[#5B0A0A] text-white' : 'bg-[#7D0A0A] text-black'}`}>
-            <MdClose 
-              className="absolute top-2 right-2 cursor-pointer"
-              onClick={() => setShowForgotPassword(false)}
-              size={25}
-            />
-            <h2 className={`text-2xl font-bold text-center mb-6 ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
-              Forgot Password?
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className={`w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
+            <div className="flex justify-end">
+              <button onClick={() => setShowForgotPassword(false)} className={`text-3xl ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
+                <MdClose />
+              </button>
+            </div>
+            <h2 className={`text-3xl mb-8 font-bold text-left ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
+              Forgot Password
             </h2>
-            <form onSubmit={handleForgotPassword} className="flex flex-col gap-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+            <form className="flex flex-col gap-5" onSubmit={handleForgotPassword}>
+              <div className="flex flex-col w-full">
+                <label htmlFor="email" className="sr-only">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
               <button
                 type="submit"
-                className={`py-2 px-4 rounded font-bold transition-colors mt-2 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                className={`py-2 px-4 rounded font-bold transition-colors mt-4 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
               >
-                Send Reset Link
+                Reset Password
               </button>
             </form>
           </div>
