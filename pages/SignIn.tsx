@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { signIn, useSession, getSession } from 'next-auth/react';
-import Image from 'next/image'; // Import Next.js Image component
-import Link from 'next/link'; // Import Next.js Link component
+import Image from 'next/image';
+import Link from 'next/link';
 import { DefaultSession } from 'next-auth';
 import { useTheme } from '../styles/ThemeContext';
+import { MdClose } from 'react-icons/md'; 
 
 // Extend the DefaultSession type to include the id and token
 interface CustomUser {
@@ -27,7 +28,9 @@ const SignIn: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { isDarkMode } = useTheme();
-  const { data: session } = useSession() as { data: CustomSession }; // Casting to CustomSession
+  const { data: session } = useSession() as { data: CustomSession }; 
+  const [showForgotPassword, setShowForgotPassword] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>('');
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,8 +48,7 @@ const SignIn: React.FC = () => {
     if (result?.error) {
       setError('Wrong password!');
     } else {
-      // Get the latest session after sign-in
-      const session = await getSession() as CustomSession; // Ensure type casting here
+      const session = await getSession() as CustomSession;
       if (session?.user?.token) {
         const userData = {
           id: session.user.id,
@@ -65,11 +67,18 @@ const SignIn: React.FC = () => {
     setAssistantCode(value);
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Email for password reset:", email);
+    setEmail('');
+    setShowForgotPassword(false);
+    alert('If an account with that email exists, a reset link will be sent.');
+  };
+
   return (
     <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
-      {/* Mobile Only Section */}
+      {/* Mobile Section */}
       <div className="sm:hidden flex flex-col items-center justify-center w-full p-8">
-        {/* Mobile Logo */}
         <div className="mb-1 -mt-12 text-center">
           <Image 
             src="/Boostifylogo.png" 
@@ -80,7 +89,6 @@ const SignIn: React.FC = () => {
           />
         </div>
 
-        {/* Mobile Sign In Form */}
         <div className={`w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
           <h2 className={`text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
             Sign In to Your Account
@@ -133,12 +141,17 @@ const SignIn: React.FC = () => {
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
+          <button
+            onClick={() => setShowForgotPassword(true)}
+            className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}
+          >
+            Forgot Password?
+          </button>
         </div>
       </div>
 
-      {/* Desktop Only Section */}
+      {/* Desktop Section */}
       <div className="hidden sm:flex flex-row w-full min-h-screen">
-        {/* Left Section - Logo and Tagline for larger screens */}
         <div className="w-1/2 flex items-center justify-center">
           <Image 
             src={isDarkMode ? '/logoTagline-dark.png' : '/logoTagline.png'} 
@@ -146,12 +159,11 @@ const SignIn: React.FC = () => {
             width={800} 
             height={800} 
             className="mx-auto"
+            priority
           />
         </div>
 
-        {/* Right Section - Larger screen sign-in form */}
         <div className={`w-1/2 flex items-center justify-center ${isDarkMode ? 'bg-[#D7B66A]' : 'bg-[#EAD196]'}`}>
-          {/* Form Sign In */}
           <div className={`w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
             <h2 className={`text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
               Sign In to Your Account
@@ -204,9 +216,46 @@ const SignIn: React.FC = () => {
                 {loading ? 'Signing In...' : 'Sign In'}
               </button>
             </form>
+            <button
+              onClick={() => setShowForgotPassword(true)}
+              className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}
+            >
+              Forgot Password?
+            </button>
           </div>
         </div>
       </div>
+
+      {showForgotPassword && (
+        <div className={`fixed inset-0 z-50 flex items-center justify-center ${isDarkMode ? 'bg-[#0D0D0D]' : 'bg-white'} bg-opacity-80`}>
+          <div className={`p-8 rounded-lg relative max-w-md w-full ${isDarkMode ? 'bg-[#5B0A0A] text-white' : 'bg-[#7D0A0A] text-black'}`}>
+            <MdClose 
+              className="absolute top-2 right-2 cursor-pointer"
+              onClick={() => setShowForgotPassword(false)}
+              size={25}
+            />
+            <h2 className={`text-2xl font-bold text-center mb-6 ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
+              Forgot Password?
+            </h2>
+            <form onSubmit={handleForgotPassword} className="flex flex-col gap-4">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <button
+                type="submit"
+                className={`py-2 px-4 rounded font-bold transition-colors mt-2 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+              >
+                Send Reset Link
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
