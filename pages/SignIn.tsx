@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { signIn, useSession, getSession } from 'next-auth/react';
-import Image from 'next/image'; // Import Next.js Image component
-import Link from 'next/link'; // Import Next.js Link component
+import Image from 'next/image';
+import Link from 'next/link';
 import { DefaultSession } from 'next-auth';
 import { useTheme } from '../styles/ThemeContext';
-import { MdClose } from 'react-icons/md'; // Import icon close dari react-icons
+import { MdClose } from 'react-icons/md'; 
+
 // Extend the DefaultSession type to include the id and token
 interface CustomUser {
   id?: number;
@@ -27,9 +28,10 @@ const SignIn: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { isDarkMode } = useTheme();
-  const { data: session } = useSession() as { data: CustomSession }; // Casting to CustomSession
+  const { data: session } = useSession() as { data: CustomSession }; 
   const [showForgotPassword, setShowForgotPassword] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -46,8 +48,7 @@ const SignIn: React.FC = () => {
     if (result?.error) {
       setError('Wrong password!');
     } else {
-      // Get the latest session after sign-in
-      const session = await getSession() as CustomSession; // Ensure type casting here
+      const session = await getSession() as CustomSession;
       if (session?.user?.token) {
         const userData = {
           id: session.user.id,
@@ -68,20 +69,16 @@ const SignIn: React.FC = () => {
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Call your API for sending a reset password email here
     console.log("Email for password reset:", email);
     setEmail('');
     setShowForgotPassword(false);
     alert('If an account with that email exists, a reset link will be sent.');
   };
 
-
-
   return (
     <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
-      {/* Mobile Only Section */}
+      {/* Mobile Section */}
       <div className="sm:hidden flex flex-col items-center justify-center w-full p-8">
-        {/* Mobile Logo */}
         <div className="mb-1 -mt-12 text-center">
           <Image 
             src="/Boostifylogo.png" 
@@ -92,7 +89,6 @@ const SignIn: React.FC = () => {
           />
         </div>
 
-        {/* Mobile Sign In Form */}
         <div className={`w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
           <h2 className={`text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
             Sign In to Your Account
@@ -145,7 +141,6 @@ const SignIn: React.FC = () => {
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
-          {/* Forgot Password Link */}
           <button
             onClick={() => setShowForgotPassword(true)}
             className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#7D0A0A]'}`}
@@ -155,9 +150,8 @@ const SignIn: React.FC = () => {
         </div>
       </div>
 
-      {/* Desktop Only Section */}
+      {/* Desktop Section */}
       <div className="hidden sm:flex flex-row w-full min-h-screen">
-        {/* Left Section - Logo and Tagline for larger screens */}
         <div className="w-1/2 flex items-center justify-center">
           <Image 
             src={isDarkMode ? '/logoTagline-dark.png' : '/logoTagline.png'} 
@@ -169,9 +163,7 @@ const SignIn: React.FC = () => {
           />
         </div>
 
-        {/* Right Section - Larger screen sign-in form */}
         <div className={`w-1/2 flex items-center justify-center ${isDarkMode ? 'bg-[#D7B66A]' : 'bg-[#EAD196]'}`}>
-          {/* Form Sign In */}
           <div className={`w-full max-w-md p-8 rounded-lg ${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'}`}>
             <h2 className={`text-3xl mb-8 font-bold text-center ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
               Sign In to Your Account
@@ -224,10 +216,9 @@ const SignIn: React.FC = () => {
                 {loading ? 'Signing In...' : 'Sign In'}
               </button>
             </form>
-            {/* Forgot Password Link */}
             <button
               onClick={() => setShowForgotPassword(true)}
-              className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#ead196]'}`}
+              className={`mt-4 underline ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}
             >
               Forgot Password?
             </button>
@@ -235,41 +226,36 @@ const SignIn: React.FC = () => {
         </div>
       </div>
 
-      {/* Forgot Password Modal */}
       {showForgotPassword && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className={`${isDarkMode ? 'bg-[#5B0A0A]' : 'bg-[#7D0A0A]'} p-6 rounded shadow-md w-96 relative`}>
-      <button
-        onClick={() => setShowForgotPassword(false)}
-        className="absolute top-2 right-2 text-xl"
-      >
-        <MdClose className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`} />
-      </button>
-      <h2 className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'} text-lg font-bold mb-4`}>
-        Reset Password
-      </h2>
-      <form onSubmit={handleForgotPassword}>
-        <div className="mb-4">
-          <label htmlFor="email" className={`${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'} block mb-2`}>
-            Enter your email :
-          </label>
-          <input
-            type="email"
-            id="email"
-            placeholder="Email"
-            className={`${isDarkMode ? 'bg-[#d7b66a]' : 'bg-[#ead196]'} border-none border p-2 rounded w-full`}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+        <div className={`fixed inset-0 z-50 flex items-center justify-center ${isDarkMode ? 'bg-[#0D0D0D]' : 'bg-white'} bg-opacity-80`}>
+          <div className={`p-8 rounded-lg relative max-w-md w-full ${isDarkMode ? 'bg-[#5B0A0A] text-white' : 'bg-[#7D0A0A] text-black'}`}>
+            <MdClose 
+              className="absolute top-2 right-2 cursor-pointer"
+              onClick={() => setShowForgotPassword(false)}
+              size={25}
+            />
+            <h2 className={`text-2xl font-bold text-center mb-6 ${isDarkMode ? 'text-[#D7B66A]' : 'text-[#EAD196]'}`}>
+              Forgot Password?
+            </h2>
+            <form onSubmit={handleForgotPassword} className="flex flex-col gap-4">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className={`p-4 rounded text-lg w-full ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <button
+                type="submit"
+                className={`py-2 px-4 rounded font-bold transition-colors mt-2 ${isDarkMode ? 'bg-[#D7B66A] text-[#5B0A0A]' : 'bg-[#EAD196] text-[#7D0A0A]'}`}
+              >
+                Send Reset Link
+              </button>
+            </form>
+          </div>
         </div>
-        <button type="submit" className={`${isDarkMode ? 'bg-[#3F3C38]' : 'bg-[#bdbdbd]'} w-full ${isDarkMode ? 'text-[#ABABAB]' : 'text-[#515151]'} p-2 rounded`}>
-          Send Reset Link
-        </button>
-      </form>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 };

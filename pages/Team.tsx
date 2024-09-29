@@ -221,6 +221,7 @@ const OurTeam: React.FC = () => {
                       onClick={() => setOpenModal(null)}
                       className={`mt-4 px-4 py-2 rounded-full ${
                         isDarkMode ? 'bg-[#5B0A0A] hover:bg-[#7D0A0A] text-[#ead196]' : 'bg-[#ead196] hover:bg-[#5B0A0A] text-[#7D0A0A]'
+
                       }`}
                     >
                       Close 
