@@ -78,7 +78,7 @@ const SignIn: React.FC = () => {
 
 
   return (
-    <div className={flex flex-col min-h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}}>
+    <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-[#0D0D0D] text-white' : 'bg-white text-black'}`}>
       {/* Mobile Only Section */}
       <div className="sm:hidden flex flex-col items-center justify-center w-full p-8">
         {/* Mobile Logo */}
